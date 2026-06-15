@@ -672,6 +672,28 @@ Nadruk: iiSU.
 
 De interface moet smooth, speels en clean voelen. Niet te druk, niet te kinderachtig, maar wel duidelijk geïnspireerd op console-interfaces.
 
+### Visuele referenties
+
+De concrete visuele richting staat als referentiebeelden in de map [`designs/`](./designs):
+
+- `designs/1.webp` — Shopii "Featured Community Submissions": linker nav-rail (My Page, Points, Library, Search, Home), bovenbalk met klok/datum, chunky afgeronde categorie-tiles met bold labels.
+- `designs/2.png` — iiSU "NEW WAVE": Wii U-achtig menu met game-tilegrid, bovenste tabs, zachte mint/teal gradient, community-posts onderaan.
+- `designs/3.png` — iiSU logo/splash: glasmorfisme, paars/blauwe gradient, frosted glass tiles.
+- `designs/4.webp` — Music player (Sanctuary OS): album-art carousel, glassy now-playing card, console-knophints onderaan.
+- `designs/5.webp` — Game detail (Ape Escape P!): full-bleed achtergrond, grote afgeronde cover, **Playtime-pill**, achievements-pill, media-thumbnail, verticale cover-carousel.
+- `designs/6.jpg` — Shopii themes: linker pill-nav, themekaarten met gradients, detailpaneel rechts.
+
+> Deze beelden tonen fan-made 3DS/console-UI (iiSU + Shopii). Ze zijn richtinggevend voor look & feel, niet 1-op-1 over te nemen — Play3DS is een webapp met eigen content.
+
+### Design language (afgeleid uit de referenties)
+
+- **Kleur:** zachte pastelgradiënten (paars↔blauw, mint/teal, perzik/oranje); heldere accentkleuren per categorie; veel lichte/witte ruimte.
+- **Materiaal:** glasmorfisme / frosted translucent panels met subtiele schaduw en diepte.
+- **Vorm:** fors afgeronde hoeken (chunky radius) en pill-vormen voor knoppen, tags en stats.
+- **Typografie:** bold, speels-afgeronde display-font voor koppen; clean sans voor body.
+- **Layout:** linker nav-rail (icoon + label) + bovenste statusbalk; kaartgebaseerde grids met depth/tilt; optioneel console-achtige knophints onderaan.
+- **Stats als pill:** speeltijd, voortgang en status tonen als pills/badges (zie `designs/5.webp`).
+
 ### Themes
 
 MVP ondersteunt:
@@ -711,6 +733,8 @@ Regels:
 - Animatieaanpak respecteren
 - Alleen visuele content/layout aanpassen waar nodig
 - Blokken gebruiken voor smooth interactions, transitions, buttons, navigatie en visual sections
+
+> **Assets volgen later.** De daadwerkelijke Osmo-block code/exports staan nog in een aparte map op de pc van de eigenaar en worden later aangeleverd. Tot die tijd bouwt Claude Code met **placeholders/eigen componenten** die later 1-op-1 vervangbaar zijn door de echte Osmo-blokken — zonder de `data-`attributes en animatieaanpak te breken.
 
 Reeds gebruikte/genoemde blokken:
 
@@ -1199,17 +1223,28 @@ Output:
 
 Doel: de feel van de website testen voordat alle backend gebouwd wordt.
 
-Taken:
+### Aanpak
 
-- Home/app-feed ontwerp
-- Dashboard ontwerp
-- Game card component
-- Quick update component
-- Game detail hero
-- Review card
-- Login/register layout
-- Light/dark mode basis
-- Osmo Supply-blokken selecteren en testen
+- Het prototype wordt **direct in Next.js** gebouwd en op **Vercel** gedeployd (geen losse HTML/CSS/JS-bestanden). Zo loopt validatie meteen via de Vercel preview-deployment (zie §0).
+- Fase 1 wordt **in kleine stukjes** opgeleverd: elke sub-fase is een afgerond, los te bekijken stukje op een Vercel preview-URL. Pas na akkoord op een stukje door naar het volgende.
+- Visuele richting volgt de referenties in [`designs/`](./designs) en de design language uit §10. Met mock/dummy-data; nog geen echte backend.
+
+### Voorwaarden
+
+- **Vercel-koppeling is nog niet gelegd** (komt nog). Zodra het repo aan een Vercel-project hangt, levert elke push een preview-URL op.
+- Een **minimale Next.js + Vercel-setup** is de eerste praktische stap van Fase 1 (overlapt met Fase 2; alleen het strikt noodzakelijke om te kunnen deployen).
+- Echte Osmo-blokken volgen later → tot dan placeholders (zie §10).
+
+### Sub-fases (in stukjes)
+
+- **Fase 1.1 — Foundation & shell:** minimale Next.js-app + Vercel-deploy, design tokens (kleur/gradients/radius/typografie/shadows uit §10), globale CSS, light/dark basis, app-shell (linker nav-rail + bovenste statusbalk).
+- **Fase 1.2 — Game card & grid:** game card component met depth/tilt + library-achtig grid, responsive (mobiel én desktop).
+- **Fase 1.3 — Home/app-feed:** ingelogd vs. niet-ingelogd, feed-secties, suggested games.
+- **Fase 1.4 — Dashboard & Quick update:** dashboard met statusgroepen + het quick-update component (de kernbelofte: updaten binnen één minuut).
+- **Fase 1.5 — Game detail hero:** full-bleed hero met cover, playtime-/status-pills, "Start playthrough".
+- **Fase 1.6 — Review card:** reviewkaart met score, label en spoiler-markering.
+- **Fase 1.7 — Login/register layout:** auth-schermen (alleen UI, nog geen echte auth).
+- **Osmo-integratie:** echte Osmo-blokken inpassen zodra de assets zijn aangeleverd.
 
 Belangrijk:
 
@@ -1217,12 +1252,13 @@ Belangrijk:
 - iiSU als hoofdinspiratie
 - Mobile-first
 - Desktop moet rijk aanvoelen
+- Elk stukje controleren op de Vercel preview-URL (desktop én mobiel, light/dark)
 
 Output:
 
-- HTML/CSS/JS prototypes
-- Component-richting
-- Eerste visuele stijlset
+- Werkende Next.js-prototypes op Vercel, stukje voor stukje
+- Herbruikbare componenten + design tokens
+- Eerste visuele stijlset (iiSU/Shopii-gericht)
 
 ---
 

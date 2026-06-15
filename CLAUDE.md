@@ -21,6 +21,17 @@ Werkafspraken en context voor Claude Code in dit project. Het volledige projectp
 - **Animaties:** GSAP, vooral via Osmo Supply-blokken
 - **Analytics:** Google Analytics
 
+## Design
+
+- **Referenties:** zie de map [`designs/`](./designs) (1–6). Stijl = **iiSU / Shopii** (fan-made 3DS/console-UI): pastelgradiënten, glasmorfisme/frosted panels, fors afgeronde hoeken en pills, linker nav-rail + bovenste statusbalk, kaartgrids met depth, stats als pills. Volledige design language in `fases.md` §10.
+- Richtinggevend, niet 1-op-1 kopiëren — Play3DS is een webapp met eigen content.
+
+## Fase 1 (design prototype) — aanpak
+
+- Wordt **direct in Next.js** gebouwd en op **Vercel** gedeployd (geen losse HTML/CSS-prototypes).
+- Wordt **in kleine stukjes** opgeleverd (sub-fases 1.1–1.7, zie `fases.md` §17); elk stukje is los te bekijken op een Vercel preview-URL. Pas door naar het volgende na akkoord.
+- Vercel-koppeling is nog niet gelegd (komt nog); echte Osmo-blokken volgen later → tot dan placeholders.
+
 ## Conventies
 
 - **Responsive:** mobile-first; desktop moet net zo sterk aanvoelen. Neem zowel desktop als mobiel mee bij UI-controle.
