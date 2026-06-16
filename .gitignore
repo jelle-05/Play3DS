@@ -32,3 +32,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# osmo supply components — lokale assets, niet in repo
+/osmo_components

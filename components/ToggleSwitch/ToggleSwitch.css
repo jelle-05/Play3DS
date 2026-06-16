@@ -1,0 +1,60 @@
+/* ─── ToggleSwitch — Osmo Supply "Toggle Switch", Play3DS-stijl ─────────
+   --toggle-count en --toggle-active worden via inline style gezet.        */
+
+.toggle-switch {
+  --toggle-padding: 4px;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--toggle-count, 2), 1fr);
+  padding: var(--toggle-padding);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-soft);
+  -webkit-backdrop-filter: var(--blur-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  position: relative;
+  width: 100%;
+  max-width: 28em;
+}
+
+/* ── Sliding pill ── */
+.toggle-switch__bg {
+  position: absolute;
+  top: var(--toggle-padding);
+  bottom: var(--toggle-padding);
+  left: var(--toggle-padding);
+  width: calc((100% - 2 * var(--toggle-padding)) / var(--toggle-count, 2));
+  transform: translateX(calc(var(--toggle-active, 0) * 100%));
+  background: var(--color-surface);
+  border-radius: calc(var(--radius-pill) - var(--toggle-padding));
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+  pointer-events: none;
+}
+
+/* ── Buttons ── */
+.toggle-switch__btn {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6em 1em;
+  background: none;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  position: relative;
+  white-space: nowrap;
+}
+
+.toggle-switch__btn:hover {
+  color: var(--color-text);
+}
+
+[data-toggle-active] {
+  color: var(--color-text);
+}

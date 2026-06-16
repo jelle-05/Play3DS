@@ -1,0 +1,152 @@
+/* ─── ButtonIcon — Osmo Supply "Button with Rotating Icon", Play3DS-stijl ───
+   data-button-anim-target attributen niet verwijderen of hernoemen.        */
+
+.btn-icon-link {
+  display: inline-flex;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+/* ── Pill container ── */
+.btn-icon-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.7em 0.9em;
+  border-radius: var(--radius-pill);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow var(--transition-base);
+}
+
+.btn-icon-link--primary .btn-icon-content {
+  background: var(--gradient-primary);
+  color: #fff;
+  box-shadow: var(--shadow-card);
+}
+
+.btn-icon-link--primary:hover .btn-icon-content {
+  box-shadow: var(--shadow-floating);
+}
+
+.btn-icon-link--secondary .btn-icon-content {
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-soft);
+  -webkit-backdrop-filter: var(--blur-soft);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+/* ── Text mask ── */
+.btn-icon-content__mask {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.btn-icon-content__text {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  --text-duplicate-distance: 1.5em;
+  text-shadow: 0px var(--text-duplicate-distance) currentColor;
+}
+
+/* ── Icon badge ── */
+.btn-icon-icon {
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  position: relative;
+}
+
+.btn-icon-icon__bg {
+  border-radius: 0.2em;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.btn-icon-link--primary .btn-icon-icon__bg {
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+.btn-icon-link--secondary .btn-icon-icon__bg {
+  background-color: var(--color-primary);
+  opacity: 0.14;
+}
+
+.btn-icon-icon__wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-icon-link--secondary .btn-icon-icon__wrap {
+  color: var(--color-primary);
+}
+
+.btn-icon-icon__list {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  flex: none;
+}
+
+.btn-icon-icon__arrow {
+  flex: none;
+  width: 1em;
+  height: 100%;
+  padding: 0.2em;
+}
+
+/* ── Hover wipe bg ── */
+.btn-icon-content__bg {
+  z-index: 0;
+  width: 120%;
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+  left: -10%;
+  transform: translate(0, 175%) rotate(15deg);
+}
+
+.btn-icon-link--primary .btn-icon-content__bg {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+.btn-icon-link--secondary .btn-icon-content__bg {
+  background-color: var(--color-primary);
+  opacity: 0.08;
+}
+
+/* ── Animations — Osmo data-button-anim-target ── */
+[data-button-anim-target] {
+  transition: transform 0.525s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-icon-link:hover .btn-icon-content__text {
+    transform: translate(0px, calc(-1 * var(--text-duplicate-distance)));
+  }
+  .btn-icon-link:hover .btn-icon-icon__bg {
+    transform: rotate(90deg);
+  }
+  .btn-icon-link:hover .btn-icon-icon__arrow {
+    transform: translate(200%, 0px);
+  }
+  .btn-icon-link:hover .btn-icon-content__bg {
+    transform: translate(0px, 0%) rotate(0deg);
+  }
+}

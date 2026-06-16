@@ -1,0 +1,113 @@
+/* ─── DepthTiles — Osmo Supply "Depth Tiles Infinite Loop", Play3DS-stijl
+   data-depth-tiles-* attributen niet verwijderen of hernoemen.           */
+
+.depth-tiles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: max(460px, 56vh);
+  position: relative;
+  overflow: clip;
+}
+
+.depth-tiles__collection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.depth-tiles__list {
+  display: grid;
+  place-items: center;
+}
+
+.depth-tiles__item {
+  will-change: transform, opacity, filter;
+  grid-area: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+  height: max-content;
+}
+
+/* ── Tile card ── */
+.depth-tile {
+  aspect-ratio: 3 / 4;
+  width: clamp(13em, 20vw, 24em);
+  border-radius: var(--radius-2xl);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-floating);
+  transition: transform 0.4s cubic-bezier(0.35, 1.5, 0.6, 1);
+  transform: scale(1) rotate(0.001deg);
+  cursor: pointer;
+}
+
+[data-depth-tiles-item]:hover .depth-tile {
+  transform: scale(0.96) rotate(0.001deg);
+}
+
+/* Gradient variants */
+.depth-tile--purple { background: linear-gradient(155deg, #9333ea 0%, #3b82f6 100%); }
+.depth-tile--mint   { background: linear-gradient(155deg, #34d399 0%, #06b6d4 100%); }
+.depth-tile--warm   { background: linear-gradient(155deg, #f59e0b 0%, #ef4444 100%); }
+.depth-tile--pink   { background: linear-gradient(155deg, #f472b6 0%, #a78bfa 100%); }
+
+/* Cover texture overlay (subtle) */
+.depth-tile__cover {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.28) 100%
+  );
+}
+
+/* Bottom info overlay */
+.depth-tile__overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, transparent 100%);
+}
+
+.depth-tile__title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: var(--space-2);
+  line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.depth-tile__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.depth-tile__pills .pill {
+  font-size: 10px;
+  padding: 2px var(--space-2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.depth-tile__pills .pill-surface {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+/* Active tile gets a subtle ring */
+[data-depth-tiles-item-status="active"] .depth-tile {
+  box-shadow: var(--shadow-floating), 0 0 0 3px rgba(255, 255, 255, 0.4);
+}

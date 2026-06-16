@@ -32,6 +32,35 @@ Werkafspraken en context voor Claude Code in dit project. Het volledige projectp
 - Wordt **in kleine stukjes** opgeleverd (sub-fases 1.1–1.7, zie `fases.md` §17); elk stukje is los te bekijken op een Vercel preview-URL. Pas door naar het volgende na akkoord.
 - Vercel-koppeling is nog niet gelegd (komt nog); echte Osmo-blokken volgen later → tot dan placeholders.
 
+## Osmo Supply-blokken — altijd eerst raadplegen
+
+De map [`osmo_components/`](./osmo_components) bevat kant-en-klare HTML/CSS/JS-bronnen van Osmo Supply. **Raadpleeg deze map altijd als eerste** bij het zoeken naar een UI-component of animatie-idee, vóórdat je iets zelf bouwt of een externe library zoekt.
+
+Beschikbare blokken (`.txt`-bestanden in `osmo_components/`):
+
+| Bestand | Wat het doet | Relevantie |
+|---|---|---|
+| `depth_tiles_infinite_loop.txt` | 3D-carousel van kaarten, GSAP | Zeer hoog — game covers |
+| `basic_gsap_slider.txt` | Draggable slider met snap, GSAP | Zeer hoog — library scroll |
+| `layout_grid_flip.txt` | Grid/list toggle met GSAP Flip | Zeer hoog — library view |
+| `button_with_rotating_icon.txt` | CTA-knop met roterend pijltje | Hoog — CTA's door de site |
+| `toggle_switch.txt` | Gesegmenteerde tab-switcher | Hoog — status/view filters |
+| `404_minigame.txt` | Interactief 404-spel, GSAP | Hoog — 404-pagina |
+| `number_up_animation.txt` | Scroll-triggered cijferodometer | Hoog — stats/dashboard |
+| `cascading_slider.txt` | Gestapelde slides met clip-path | Matig — featured sectie |
+| `back_to_top_button.txt` | Floating scroll-to-top, GSAP | Laag — lange pagina's |
+| `click_to_zoom_lightbox_image.txt` | Klik-zoom lightbox, GSAP | Matig — game screenshots |
+| `socials_share_buttons.txt` | Deelknoppen (X, Reddit, …) | Matig — review-pagina |
+| `scaling_hamburger_navigation.txt` | Uitschalende hamburger-nav | Laag — al eigen nav-rail |
+| `parallax_image_slider.txt` | Parallax-slider, GSAP + Smooothy | Laag |
+| `events_calander_date_picker.txt` | Kalender met event-kaarten | Niet van toepassing |
+
+**Integratieregels (verplicht):**
+- `data-`-attributen **niet** verwijderen of hernoemen — deze worden gebruikt door de JS-logica.
+- Animatieaanpak respecteren (GSAP, CSS of combinatie) — niet zomaar omzetten naar een andere aanpak.
+- Alleen visuele/stijlaanpassingen doorvoeren; de functionele kern van het blok ongewijzigd laten.
+- De map `osmo_components/` staat in `.gitignore` en wordt niet meegecommit aan de repo.
+
 ## Conventies
 
 - **Responsive:** mobile-first; desktop moet net zo sterk aanvoelen. Neem zowel desktop als mobiel mee bij UI-controle.
