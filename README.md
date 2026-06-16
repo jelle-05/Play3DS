@@ -30,8 +30,10 @@ npm start      # productie server starten na build
 app/
   globals.css      design tokens, reset, shell layout, utility classes
   layout.tsx       root layout — StatusBar + NavRail + main
-  page.tsx         tijdelijke homepage (Phase 1.1 placeholder)
+  page.tsx         homepage — twee-state (niet-ingelogd / ingelogd), DEMO_SIGNED_IN constante
   page.css         homepage-specifieke stijlen
+  games/
+    page.tsx       game-bibliotheek met slider + grid
 components/
   NavRail/         linker nav-rail (desktop) + bottom tab bar (mobiel)
   StatusBar/       vaste statusbalk bovenaan
@@ -41,13 +43,20 @@ components/
   ButtonIcon/      Osmo Button with Rotating Icon — CTA-knoppen
   DepthTiles/      Osmo Depth Tiles Infinite Loop — 3D game-carousel
   ToggleSwitch/    Osmo Toggle Switch — gesegmenteerde statusfilter
-  LibraryFilter/   homepage game-bibliotheek met statusfilter
+  LibraryFilter/   game-bibliotheek met statusfilter (op /games)
+  HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
+  HomeAuthPanel/   login/register prototype-panel (tabs, placeholder fields; geen echte auth)
+  ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
+  QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
 lib/
   games.ts         Game type + MOCK_GAMES (10 placeholder 3DS-games)
+  homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
 designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
 
-> **Data:** alle game-data is placeholder (`lib/games.ts`). Supabase/auth volgen in Fase 2.
+> **Data:** alle data is placeholder. `lib/games.ts` voor games, `lib/homeFeed.ts` voor feed/user-data. Supabase/auth volgen in Fase 2.
+>
+> **Auth:** `HomeAuthPanel` is een prototype-UI — geen echte login/registratie. Auth wordt gekoppeld in Fase 1.7 / Fase 2.
 
 ## Fase-status
 
@@ -56,7 +65,11 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 0 | Concept & productkeuzes | ✅ Afgerond |
 | 1.1 | Foundation & shell | ✅ Afgerond |
 | 1.2 | Game card & grid | ✅ Afgerond |
-| 1.3–1.7 | Home feed, dashboard, game detail, review, login/register | ⏳ Volgende stap |
+| 1.3 | Home/app-feed (niet-ingelogd + ingelogd prototype) | ✅ Afgerond |
+| 1.4 | Dashboard & Quick update | ⏳ Volgende stap |
+| 1.5 | Game detail hero | 🔲 Gepland |
+| 1.6 | Review card | 🔲 Gepland |
+| 1.7 | Login/register layout | 🔲 Gepland |
 | 2–9 | Technical foundation → public launch | 🔲 Gepland |
 
 ## Documentatie

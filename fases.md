@@ -1237,10 +1237,10 @@ Doel: de feel van de website testen voordat alle backend gebouwd wordt.
 
 ### Sub-fases (in stukjes)
 
-- **Fase 1.1 — Foundation & shell:** minimale Next.js-app + Vercel-deploy, design tokens (kleur/gradients/radius/typografie/shadows uit §10), globale CSS, light/dark basis, app-shell (linker nav-rail + bovenste statusbalk).
-- **Fase 1.2 — Game card & grid:** game card component met depth/tilt + library-achtig grid, responsive (mobiel én desktop).
-- **Fase 1.3 — Home/app-feed:** ingelogd vs. niet-ingelogd, feed-secties, suggested games.
-- **Fase 1.4 — Dashboard & Quick update:** dashboard met statusgroepen + het quick-update component (de kernbelofte: updaten binnen één minuut).
+- **Fase 1.1 — Foundation & shell:** minimale Next.js-app + Vercel-deploy, design tokens (kleur/gradients/radius/typografie/shadows uit §10), globale CSS, light/dark basis, app-shell (linker nav-rail + bovenste statusbalk). ✅
+- **Fase 1.2 — Game card & grid:** game card component met depth/tilt + library-achtig grid, responsive (mobiel én desktop). ✅
+- **Fase 1.3 — Home/app-feed:** ingelogd vs. niet-ingelogd, feed-secties, suggested games. Geïmplementeerd: twee-state homepage via `DEMO_SIGNED_IN`, niet-ingelogde split-layout (hero + DepthTiles + auth-panel), ingelogde feed (stats-pills, actieve playthroughs, QuickUpdate-preview, ActivityFeed, suggested games, review-previews). Auth is prototype-UI; Supabase volgt in Fase 1.7/2. ✅
+- **Fase 1.4 — Dashboard & Quick update:** dashboard met statusgroepen + het quick-update component (de kernbelofte: updaten binnen één minuut). ⏳
 - **Fase 1.5 — Game detail hero:** full-bleed hero met cover, playtime-/status-pills, "Start playthrough".
 - **Fase 1.6 — Review card:** reviewkaart met score, label en spoiler-markering.
 - **Fase 1.7 — Login/register layout:** auth-schermen (alleen UI, nog geen echte auth).
