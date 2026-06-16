@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ToggleSwitch from "@/components/ToggleSwitch/ToggleSwitch";
-import GameCard from "@/components/GameCard/GameCard";
+import GameGrid from "@/components/GameGrid/GameGrid";
 import { MOCK_GAMES } from "@/lib/games";
 import "./LibraryFilter.css";
 
@@ -41,11 +41,7 @@ export default function LibraryFilter() {
       {filtered.length === 0 ? (
         <p className="library-filter__empty">No games with this status yet.</p>
       ) : (
-        <div className="game-grid">
-          {filtered.map((game) => (
-            <GameCard key={game.id} game={game} />
-          ))}
-        </div>
+        <GameGrid games={filtered} hideTitle />
       )}
     </section>
   );

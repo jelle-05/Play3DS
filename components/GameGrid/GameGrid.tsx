@@ -10,6 +10,7 @@ import "./GameGrid.css";
 interface GameGridProps {
   games: Game[];
   title?: string;
+  hideTitle?: boolean;
 }
 
 /* ── Osmo Supply: Layout Grid Flip ────────────────────────────────────
@@ -106,7 +107,7 @@ function initGridLayoutFlip() {
   });
 }
 
-export default function GameGrid({ games, title = "All Games" }: GameGridProps) {
+export default function GameGrid({ games, title = "All Games", hideTitle = false }: GameGridProps) {
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function GameGrid({ games, title = "All Games" }: GameGridProps) 
     <div data-layout-status="large" data-layout-group="" className="game-grid-wrap">
       {/* Header met layout-toggle */}
       <div className="game-grid-header">
-        <h2 className="game-grid-title">{title}</h2>
+        {!hideTitle && <h2 className="game-grid-title">{title}</h2>}
         <div className="layout-buttons">
           <button
             data-layout-button="large"

@@ -16,15 +16,3 @@
   text-align: center;
 }
 
-/* ── Game grid (homepage variant) ── */
-.game-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
-}
-
-@media (min-width: 900px) {
-  .game-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
