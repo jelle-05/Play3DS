@@ -1,0 +1,255 @@
+.home-feed {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-16);
+}
+
+/* ── Welcome header ── */
+.feed-welcome {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.feed-welcome__title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: var(--space-1);
+}
+
+.feed-welcome__sub {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+}
+
+/* Stats pills */
+.feed-stats {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.feed-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  min-width: 72px;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.feed-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.feed-stat__value {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.feed-stat__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Two-column body ── */
+.feed-body {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* ── Shared section styles ── */
+.feed-section {
+  margin-bottom: var(--space-6);
+}
+
+.feed-section:last-child {
+  margin-bottom: 0;
+}
+
+.feed-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.feed-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.feed-section-link {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.feed-section-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Active playthroughs grid ── */
+.feed-active-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+/* ── Compact suggested games grid ── */
+.feed-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+/* ── Review preview cards ── */
+.feed-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.review-preview-card {
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: default;
+}
+
+.review-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.review-preview-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.review-preview-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+/* Gradient dot classes */
+.game-card-cover--purple  { background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%); }
+.game-card-cover--mint    { background: linear-gradient(135deg, #34d399 0%, #06b6d4 100%); }
+.game-card-cover--warm    { background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); }
+.game-card-cover--pink    { background: linear-gradient(135deg, #f472b6 0%, #a78bfa 100%); }
+.game-card-cover--blue    { background: linear-gradient(135deg, #60a5fa 0%, #818cf8 100%); }
+.game-card-cover--teal    { background: linear-gradient(135deg, #2dd4bf 0%, #34d399 100%); }
+.game-card-cover--red     { background: linear-gradient(135deg, #f87171 0%, #fb923c 100%); }
+.game-card-cover--orange  { background: linear-gradient(135deg, #fb923c 0%, #fbbf24 100%); }
+
+.review-preview-card__game {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.review-preview-card__rating {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.review-preview-card__excerpt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.review-preview-card__time {
+  font-size: var(--text-xs);
+  color: var(--color-text-soft);
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .feed-body {
+    grid-template-columns: 1fr;
+  }
+
+  .feed-compact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .home-feed {
+    padding: var(--space-4) var(--space-4) var(--space-12);
+  }
+
+  .feed-welcome {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .feed-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .feed-stat {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .feed-active-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feed-compact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
