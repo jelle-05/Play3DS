@@ -1,0 +1,118 @@
+/* ─── GameGrid — Osmo Supply "Layout Grid Flip", Play3DS-stijl ─────────
+   data-layout-* attributen niet verwijderen of hernoemen.               */
+
+.game-grid-wrap {
+  width: 100%;
+}
+
+/* ── Header met toggle-knoppen ── */
+.game-grid-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.game-grid-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ── Layout toggle buttons ── */
+.layout-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.layout-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.layout-btn:hover {
+  color: var(--color-primary);
+  border-color: var(--color-border-strong);
+}
+
+.layout-btn.is--active {
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
+}
+
+.layout-btn__icon {
+  width: 0.75em;
+  flex-shrink: 0;
+}
+
+/* ── Grid layout — CSS variables controlled by data-layout-status ── */
+[data-layout-status="large"] {
+  --columns: 3;
+  --column-gap: 1.5em;
+}
+
+[data-layout-status="small"] {
+  --columns: 5;
+  --column-gap: 1em;
+}
+
+@media (max-width: 991px) {
+  [data-layout-status="large"]  { --columns: 2; }
+  [data-layout-status="small"]  { --columns: 3; }
+}
+
+@media (max-width: 767px) {
+  [data-layout-status="large"]  { --columns: 2; --column-gap: 1em; }
+  [data-layout-status="small"]  { --columns: 3; --column-gap: 0.5em; }
+}
+
+@media (max-width: 480px) {
+  [data-layout-status="large"]  { --columns: 1; --column-gap: 0; }
+  [data-layout-status="small"]  { --columns: 2; --column-gap: 0.75em; }
+}
+
+/* ── Grid list ── */
+.layout-grid__list {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--column-gap);
+  row-gap: var(--space-6);
+  position: relative;
+}
+
+/* ── Grid item ── */
+[data-layout-grid-item] {
+  width: calc((100% - (var(--columns) - 1) * var(--column-gap)) / var(--columns));
+  will-change: transform;
+  position: relative;
+}
+
+/* Compact mode: kleinere card-info tekst */
+[data-layout-status="small"] [data-layout-grid-item] .game-card-title {
+  font-size: var(--text-xs);
+  transition: all 0.65s cubic-bezier(0.65, 0, 0.1, 1);
+}
+
+[data-layout-status="small"] [data-layout-grid-item] .game-card-meta {
+  display: none;
+}
+
+[data-layout-status="small"] [data-layout-grid-item] .game-card-pills .pill-surface {
+  display: none;
+}

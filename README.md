@@ -35,8 +35,19 @@ app/
 components/
   NavRail/         linker nav-rail (desktop) + bottom tab bar (mobiel)
   StatusBar/       vaste statusbalk bovenaan
+  GameCard/        herbruikbare game-kaart (gradient cover, progress bar, pills)
+  GameGrid/        Osmo Layout Grid Flip — grid met comfort/compact toggle
+  GameSlider/      Osmo Basic GSAP Slider — horizontale draggable slider
+  ButtonIcon/      Osmo Button with Rotating Icon — CTA-knoppen
+  DepthTiles/      Osmo Depth Tiles Infinite Loop — 3D game-carousel
+  ToggleSwitch/    Osmo Toggle Switch — gesegmenteerde statusfilter
+  LibraryFilter/   homepage game-bibliotheek met statusfilter
+lib/
+  games.ts         Game type + MOCK_GAMES (10 placeholder 3DS-games)
 designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
+
+> **Data:** alle game-data is placeholder (`lib/games.ts`). Supabase/auth volgen in Fase 2.
 
 ## Fase-status
 
@@ -44,8 +55,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 |------|--------------|--------|
 | 0 | Concept & productkeuzes | ✅ Afgerond |
 | 1.1 | Foundation & shell | ✅ Afgerond |
-| 1.2 | Game card & grid | ⏳ Volgende stap |
-| 1.3–1.7 | Home feed, dashboard, game detail, review, login/register | 🔲 Gepland |
+| 1.2 | Game card & grid | ✅ Afgerond |
+| 1.3–1.7 | Home feed, dashboard, game detail, review, login/register | ⏳ Volgende stap |
 | 2–9 | Technical foundation → public launch | 🔲 Gepland |
 
 ## Documentatie

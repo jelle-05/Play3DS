@@ -1,0 +1,121 @@
+/* ─── GameSlider — Osmo Supply "Basic GSAP Slider", Play3DS-stijl ──────
+   data-gsap-slider-* attributen niet verwijderen of hernoemen.          */
+
+.game-slider-wrap {
+  margin-bottom: var(--space-10);
+}
+
+.game-slider-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+}
+
+/* ── Slider container ── */
+.gsap-slider {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  position: relative;
+  overflow: hidden;
+}
+
+.gsap-slider__collection {
+  width: 100%;
+}
+
+/* ── Draggable track ── */
+.gsap-slider__list {
+  display: flex;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+  touch-action: pan-y;
+  backface-visibility: hidden;
+}
+
+/* Responsive: slides per view + gap via CSS variables */
+[data-gsap-slider-init] {
+  --slider-status: on;
+  --slider-spv: 3;
+  --slider-gap: 1.5em;
+}
+
+@media (max-width: 991px) {
+  [data-gsap-slider-init] {
+    --slider-spv: 2.25;
+    --slider-gap: 1.25em;
+  }
+}
+
+@media (max-width: 767px) {
+  [data-gsap-slider-init] {
+    --slider-spv: 1.2;
+    --slider-gap: 1em;
+  }
+}
+
+/* ── Slide item ── */
+.gsap-slider__item {
+  width: calc(((100% - 1px) - (var(--slider-spv) - 1) * var(--slider-gap)) / var(--slider-spv));
+  margin-right: var(--slider-gap);
+  flex: none;
+}
+
+.gsap-slider__item:last-child {
+  margin-right: 0;
+}
+
+/* Inactive slides: slightly dimmed */
+[data-gsap-slider-item-status="not-active"] .game-card {
+  opacity: 0.6;
+  transition: opacity var(--transition-base);
+}
+
+/* ── Cursor states ── */
+[data-gsap-slider-list-status="grab"]    { cursor: grab; }
+[data-gsap-slider-list-status="grabbing"] { cursor: grabbing; }
+
+/* ── Controls ── */
+.gsap-slider__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+[data-gsap-slider-status="not-active"] [data-gsap-slider-controls] {
+  display: none;
+}
+
+.gsap-slider__control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.gsap-slider__control:hover {
+  background: var(--color-surface-soft);
+  border-color: var(--color-border-strong);
+}
+
+.gsap-slider__control svg {
+  width: 1em;
+  height: 1em;
+}
+
+[data-gsap-slider-control-status="not-active"] {
+  opacity: 0.25;
+  pointer-events: none;
+}
