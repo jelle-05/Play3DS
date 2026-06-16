@@ -3,6 +3,7 @@ import { Fredoka, Inter } from "next/font/google";
 import "./globals.css";
 import NavRail from "@/components/NavRail/NavRail";
 import StatusBar from "@/components/StatusBar/StatusBar";
+import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
 
 const fredoka = Fredoka({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fredoka.variable} ${inter.variable}`}>
       <body>
+        <SmoothScroll />
         <StatusBar />
         <div className="app-shell">
           <NavRail />

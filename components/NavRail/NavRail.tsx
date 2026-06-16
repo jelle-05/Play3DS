@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "./NavRail.css";
@@ -46,35 +47,51 @@ const NAV_ITEMS = [
 
 export default function NavRail() {
   const pathname = usePathname();
+  const activeIndex = NAV_ITEMS.findIndex((item) => item.href === pathname);
 
   return (
     <>
-      {/* Desktop: vertical nav rail */}
+      {/* Desktop: vertical nav rail met sliding indicator */}
       <nav className="nav-rail" aria-label="Main navigation">
         <div className="nav-rail-logo" aria-hidden="true">
           <span className="nav-rail-logo-mark">▶</span>
         </div>
 
-        <ul className="nav-rail-list" role="list">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`nav-item${isActive ? " nav-item--active" : ""}`}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  <span className="nav-item-icon">{item.icon}</span>
-                  <span className="nav-item-label">{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div
+          className="nav-rail-list-wrap"
+          style={
+            activeIndex >= 0
+              ? ({ "--nav-active-index": activeIndex } as React.CSSProperties)
+              : undefined
+          }
+        >
+          {/* Sliding indicator — beweegt naar het actieve item */}
+          <div
+            className={`nav-rail-indicator${activeIndex < 0 ? " nav-rail-indicator--hidden" : ""}`}
+            aria-hidden="true"
+          />
+
+          <ul className="nav-rail-list" role="list">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`nav-item${isActive ? " nav-item--active" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    <span className="nav-item-icon">{item.icon}</span>
+                    <span className="nav-item-label">{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </nav>
 
-      {/* Mobile: bottom tab bar */}
+      {/* Mobile: bottom tab bar (ongewijzigd) */}
       <nav className="bottom-nav" aria-label="Main navigation">
         <ul className="bottom-nav-list" role="list">
           {NAV_ITEMS.map((item) => {

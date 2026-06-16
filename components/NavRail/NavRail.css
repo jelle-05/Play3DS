@@ -34,14 +34,48 @@
   line-height: 1;
 }
 
+/* ── Wrapper voor indicator + list ── */
+.nav-rail-list-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ── Sliding indicator ── */
+/* Stap = min-height item (60px) + gap (--space-1 = 4px) = 64px */
+.nav-rail-indicator {
+  position: absolute;
+  top: 0;
+  left: var(--space-2);
+  right: var(--space-2);
+  height: 60px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-card);
+  transform: translateY(calc(var(--nav-active-index, 0) * 64px));
+  transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nav-rail-indicator--hidden {
+  opacity: 0;
+}
+
+/* ── Nav list (boven indicator) ── */
 .nav-rail-list {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-1);
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
+/* ── Nav items ── */
 .nav-item {
   display: flex;
   flex-direction: column;
@@ -53,11 +87,9 @@
   padding: var(--space-2) var(--space-1);
   border-radius: var(--radius-lg);
   color: var(--color-text-muted);
-  transition:
-    background var(--transition-fast),
-    color var(--transition-fast),
-    box-shadow var(--transition-fast);
+  transition: color var(--transition-fast), background var(--transition-fast);
   text-decoration: none;
+  position: relative;
 }
 
 .nav-item:hover {
@@ -65,14 +97,13 @@
   color: var(--color-primary);
 }
 
+/* Actief: tekst wit — indicator geeft de achtergrond */
 .nav-item--active {
-  background: var(--gradient-primary);
   color: var(--color-text-inverse);
-  box-shadow: var(--shadow-card);
 }
 
 .nav-item--active:hover {
-  background: var(--gradient-primary);
+  background: transparent;
   color: var(--color-text-inverse);
 }
 
