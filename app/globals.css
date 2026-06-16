@@ -1,0 +1,315 @@
+/* ============================================================
+   Play3DS — Global Styles & Design Tokens
+   ============================================================ */
+
+/* ─── Design Tokens: Light Mode ─────────────────────────── */
+:root {
+  /* Brand colors */
+  --color-primary:       #7c3aed;
+  --color-primary-light: #a78bfa;
+  --color-primary-dark:  #5b21b6;
+  --color-accent:        #06b6d4;
+  --color-accent-green:  #10b981;
+  --color-accent-pink:   #f472b6;
+
+  /* Backgrounds */
+  --color-bg:                 #edeaff;
+  --color-bg-subtle:          #e4e0ff;
+  --color-surface:            #ffffff;
+  --color-surface-soft:       #f8f6ff;
+  --color-surface-glass:      rgba(255, 255, 255, 0.80);
+  --color-surface-glass-border: rgba(255, 255, 255, 0.55);
+
+  /* Text */
+  --color-text:         #1e1b4b;
+  --color-text-muted:   #6b6b8a;
+  --color-text-soft:    #9ca3af;
+  --color-text-inverse: #ffffff;
+
+  /* Borders */
+  --color-border:       rgba(124, 58, 237, 0.12);
+  --color-border-strong: rgba(124, 58, 237, 0.24);
+
+  /* Playthrough status */
+  --color-playing:   #10b981;
+  --color-paused:    #f59e0b;
+  --color-completed: #3b82f6;
+  --color-dropped:   #ef4444;
+  --color-want:      #8b5cf6;
+
+  /* Gradients */
+  --gradient-primary:      linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  --gradient-primary-soft: linear-gradient(135deg, #c4b5fd 0%, #93c5fd 100%);
+  --gradient-mint:         linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
+  --gradient-warm:         linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  --gradient-pink:         linear-gradient(135deg, #f472b6 0%, #a78bfa 100%);
+  --gradient-bg:           linear-gradient(160deg, #edeaff 0%, #e0e9ff 55%, #e8f5ff 100%);
+
+  /* Border radius */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-2xl:  32px;
+  --radius-pill: 9999px;
+
+  /* Spacing scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Typography */
+  --font-display: var(--font-fredoka), 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font-body:    var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+
+  /* Shadows */
+  --shadow-soft:     0 2px 8px rgba(124, 58, 237, 0.08);
+  --shadow-card:     0 4px 20px rgba(124, 58, 237, 0.12);
+  --shadow-floating: 0 8px 40px rgba(124, 58, 237, 0.18);
+  --shadow-inset:    inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  --shadow-glow:     0 0 24px rgba(147, 51, 234, 0.28);
+
+  /* Shell dimensions */
+  --nav-rail-width:    88px;
+  --status-bar-height: 48px;
+  --bottom-nav-height: 64px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms ease;
+  --transition-slow: 360ms ease;
+
+  /* Blur */
+  --blur-glass: blur(16px);
+  --blur-soft:  blur(8px);
+}
+
+/* ─── Design Tokens: Dark Mode ───────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary:       #a78bfa;
+    --color-primary-light: #c4b5fd;
+    --color-primary-dark:  #7c3aed;
+    --color-accent:        #22d3ee;
+    --color-accent-green:  #34d399;
+    --color-accent-pink:   #f9a8d4;
+
+    --color-bg:                   #0d0b1a;
+    --color-bg-subtle:            #130f26;
+    --color-surface:              #1a1730;
+    --color-surface-soft:         #16132b;
+    --color-surface-glass:        rgba(26, 23, 48, 0.85);
+    --color-surface-glass-border: rgba(167, 139, 250, 0.15);
+
+    --color-text:         #f0eeff;
+    --color-text-muted:   #9ca3af;
+    --color-text-soft:    #6b7280;
+    --color-text-inverse: #1e1b4b;
+
+    --color-border:        rgba(167, 139, 250, 0.14);
+    --color-border-strong: rgba(167, 139, 250, 0.28);
+
+    --gradient-primary:      linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    --gradient-primary-soft: linear-gradient(135deg, #6d28d9 0%, #1d4ed8 100%);
+    --gradient-bg:           linear-gradient(160deg, #0d0b1a 0%, #12102a 55%, #0d1525 100%);
+
+    --shadow-soft:     0 2px 8px rgba(0, 0, 0, 0.30);
+    --shadow-card:     0 4px 20px rgba(0, 0, 0, 0.40);
+    --shadow-floating: 0 8px 40px rgba(0, 0, 0, 0.50);
+    --shadow-inset:    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --shadow-glow:     0 0 24px rgba(167, 139, 250, 0.24);
+  }
+}
+
+/* ─── CSS Reset ──────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  color: var(--color-text);
+  background: var(--color-bg);
+  background-image: var(--gradient-bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ─── Focus Styles ───────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Text Selection ─────────────────────────────────────── */
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-text-inverse);
+}
+
+/* ─── App Shell Layout ───────────────────────────────────── */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--status-bar-height);
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: var(--bottom-nav-height);
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    padding-left: var(--nav-rail-width);
+  }
+
+  .main-content {
+    padding-bottom: 0;
+  }
+}
+
+/* ─── Utility: Gradient Text ─────────────────────────────── */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Utility: Glass Panel ───────────────────────────────── */
+.glass-panel {
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--color-surface-glass-border);
+}
+
+/* ─── Utility: Pills / Badges ────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.pill-primary {
+  background: var(--gradient-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-soft);
+}
+
+.pill-surface {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.pill-mint {
+  background: var(--gradient-mint);
+  color: var(--color-text-inverse);
+}
+
+.pill-warm {
+  background: var(--gradient-warm);
+  color: var(--color-text-inverse);
+}
+
+.pill-playing {
+  background: var(--color-playing);
+  color: #fff;
+}
+
+.pill-completed {
+  background: var(--color-completed);
+  color: #fff;
+}
+
+.pill-paused {
+  background: var(--color-paused);
+  color: #fff;
+}
+
+.pill-dropped {
+  background: var(--color-dropped);
+  color: #fff;
+}
+
+.pill-want {
+  background: var(--color-want);
+  color: #fff;
+}
+
+/* ─── Utility: Display heading ───────────────────────────── */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+}

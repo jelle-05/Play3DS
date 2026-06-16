@@ -1,0 +1,81 @@
+/* ─── Status Bar ─────────────────────────────────────────── */
+.status-bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--status-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-5);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom: 1px solid var(--color-surface-glass-border);
+  z-index: 200;
+}
+
+/* ── Brand (left) ── */
+.status-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.status-bar-logo-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  font-size: var(--text-sm);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+  flex-shrink: 0;
+}
+
+.status-bar-name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+/* ── Status info (right) ── */
+.status-bar-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.status-bar-date,
+.status-bar-time {
+  font-feature-settings: "tnum";
+  letter-spacing: 0.02em;
+}
+
+.status-bar-divider {
+  opacity: 0.35;
+}
+
+.status-bar-online {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-green);
+  box-shadow: 0 0 6px var(--color-accent-green);
+  flex-shrink: 0;
+}
+
+/* ── Responsive: compact on small screens ── */
+@media (max-width: 400px) {
+  .status-bar-date,
+  .status-bar-divider {
+    display: none;
+  }
+}
