@@ -122,9 +122,12 @@
   margin-bottom: var(--space-8);
 }
 
-/* DepthTiles height on the homepage */
+/* DepthTiles height on the homepage.
+   The centre tile is full-scale; its height = tile-width × 4/3 (≈ 26.6vw,
+   capped at 512px). The container tracks that (34vw) plus breathing room so
+   the active tile and its pills are never clipped. */
 .home-featured .depth-tiles {
-  height: max(340px, 46vh);
+  height: clamp(340px, 34vw, 600px);
 }
 
 /* ── Review snippets ── */
