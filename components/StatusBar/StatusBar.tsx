@@ -1,3 +1,4 @@
+import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 import "./StatusBar.css";
 
 export default function StatusBar() {
@@ -13,6 +14,7 @@ export default function StatusBar() {
         <span className="status-bar-divider" aria-hidden="true">|</span>
         <span className="status-bar-time" aria-hidden="true">12:00</span>
         <span className="status-bar-online" aria-label="Online" title="Online" />
+        <ThemeToggle />
       </div>
     </header>
   );

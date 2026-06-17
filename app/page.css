@@ -5,24 +5,11 @@
   margin: 0 auto;
 }
 
-/* ── Logged-out split layout ── */
+/* ── Logged-out layout ── */
 .home--logged-out {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   padding: var(--space-6) var(--space-6) var(--space-16);
-}
-
-.home-split {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: var(--space-8);
-  align-items: start;
-}
-
-@media (max-width: 991px) {
-  .home-split {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ── Hero ── */
@@ -68,6 +55,21 @@
   display: flex;
   gap: var(--space-3);
   flex-wrap: wrap;
+}
+
+.home-hero-login {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.home-hero-login__link {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.home-hero-login__link:hover {
+  text-decoration: underline;
 }
 
 /* ── Feature pills ── */
@@ -120,9 +122,9 @@
   margin-bottom: var(--space-8);
 }
 
-/* DepthTiles height override in split context */
-.home-split__left .depth-tiles {
-  height: max(320px, 42vh);
+/* DepthTiles height on the homepage */
+.home-featured .depth-tiles {
+  height: max(340px, 46vh);
 }
 
 /* ── Review snippets ── */

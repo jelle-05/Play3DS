@@ -61,8 +61,8 @@ components/
   GameDetailHero/  full-bleed game detail hero (cover, status/playtime/progress-pills, CTA)
   ReviewCard/      reviewkaart — score, statuslabel, spoiler-reveal, like-toggle
   HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
-  HomeAuthPanel/   login/register prototype-panel op de homepage (tabs, placeholder fields)
   AuthForm/        herbruikbaar login/register-formulier + auth-page layout (/login, /register)
+  ThemeToggle/     light/dark toggle in de StatusBar (data-theme + localStorage)
   ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
   QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
 lib/

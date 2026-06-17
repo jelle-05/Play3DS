@@ -34,6 +34,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fredoka.variable} ${inter.variable}`}>
       <body>
+        {/* Set the theme before paint to avoid a flash of the wrong mode. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
         <SmoothScroll />
         <StatusBar />
         <div className="app-shell">
