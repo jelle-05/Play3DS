@@ -43,6 +43,10 @@ app/
   reviews/
     page.tsx       community review-feed (ReviewCard grid)
     page.css       reviews-pagina-specifieke stijlen
+  login/
+    page.tsx       login-scherm (AuthForm, initialTab="login")
+  register/
+    page.tsx       register-scherm (AuthForm, initialTab="register")
 components/
   NavRail/         linker nav-rail (desktop) + bottom tab bar (mobiel)
   StatusBar/       vaste statusbalk bovenaan
@@ -57,7 +61,8 @@ components/
   GameDetailHero/  full-bleed game detail hero (cover, status/playtime/progress-pills, CTA)
   ReviewCard/      reviewkaart — score, statuslabel, spoiler-reveal, like-toggle
   HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
-  HomeAuthPanel/   login/register prototype-panel (tabs, placeholder fields; geen echte auth)
+  HomeAuthPanel/   login/register prototype-panel op de homepage (tabs, placeholder fields)
+  AuthForm/        herbruikbaar login/register-formulier + auth-page layout (/login, /register)
   ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
   QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
 lib/
@@ -82,8 +87,9 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.4 | Dashboard & Quick update | ✅ Afgerond |
 | 1.5 | Game detail hero | ✅ Afgerond |
 | 1.6 | Review card | ✅ Afgerond |
-| 1.7 | Login/register layout | ⏳ Volgende stap |
-| 2–9 | Technical foundation → public launch | 🔲 Gepland |
+| 1.7 | Login/register layout | ✅ Afgerond |
+| 2 | Technical foundation (Supabase, auth, DB) | ⏳ Volgende stap |
+| 3–9 | Game library → public launch | 🔲 Gepland |
 
 ## Documentatie
 
