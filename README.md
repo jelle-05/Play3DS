@@ -38,8 +38,11 @@ app/
   games/
     page.tsx       game-bibliotheek met slider + grid
     [slug]/
-      page.tsx     game detail — hero + about/details (SSG per game)
+      page.tsx     game detail — hero + about/details + reviews (SSG per game)
       page.css     detailpagina-specifieke stijlen
+  reviews/
+    page.tsx       community review-feed (ReviewCard grid)
+    page.css       reviews-pagina-specifieke stijlen
 components/
   NavRail/         linker nav-rail (desktop) + bottom tab bar (mobiel)
   StatusBar/       vaste statusbalk bovenaan
@@ -52,6 +55,7 @@ components/
   LibraryFilter/   game-bibliotheek met statusfilter (op /games)
   DashboardLibrary/ dashboard-statusgroepen met ToggleSwitch-filter + empty states (GSAP Flip)
   GameDetailHero/  full-bleed game detail hero (cover, status/playtime/progress-pills, CTA)
+  ReviewCard/      reviewkaart — score, statuslabel, spoiler-reveal, like-toggle
   HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
   HomeAuthPanel/   login/register prototype-panel (tabs, placeholder fields; geen echte auth)
   ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
@@ -59,6 +63,7 @@ components/
 lib/
   games.ts         Game type (+ optionele detail-metadata) + MOCK_GAMES (10 games) + STATUS_GROUPS / groupGamesByStatus / getGameById
   homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
+  reviews.ts       Review type + MOCK_REVIEWS + reviewStatusLabel / getReviewsForGame
 designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
 
@@ -76,8 +81,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.3 | Home/app-feed (niet-ingelogd + ingelogd prototype) | ✅ Afgerond |
 | 1.4 | Dashboard & Quick update | ✅ Afgerond |
 | 1.5 | Game detail hero | ✅ Afgerond |
-| 1.6 | Review card | ⏳ Volgende stap |
-| 1.7 | Login/register layout | 🔲 Gepland |
+| 1.6 | Review card | ✅ Afgerond |
+| 1.7 | Login/register layout | ⏳ Volgende stap |
 | 2–9 | Technical foundation → public launch | 🔲 Gepland |
 
 ## Documentatie

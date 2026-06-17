@@ -1,0 +1,53 @@
+/* ─── /reviews — community review feed ───────────────────────────────── */
+
+.reviews-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--space-6) var(--space-16);
+}
+
+.reviews-header {
+  padding: var(--space-10) 0 var(--space-8);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.reviews-header__title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-3xl), 4vw, var(--text-4xl));
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.reviews-header__sub {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+/* Masonry-ish responsive grid; cards size to their content. */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 767px) {
+  .reviews-page {
+    padding: 0 var(--space-4) var(--space-12);
+  }
+
+  .reviews-header {
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}

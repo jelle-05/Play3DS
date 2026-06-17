@@ -130,6 +130,9 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
           <section className="feed-section">
             <div className="feed-section-header">
               <h2 className="feed-section-title">Recent Reviews</h2>
+              <Link href="/reviews" className="feed-section-link">
+                See all →
+              </Link>
             </div>
             <div className="feed-reviews">
               {reviews.map((r) => (

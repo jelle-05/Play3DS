@@ -1,4 +1,5 @@
 import "./page.css";
+import Link from "next/link";
 import ButtonIcon from "@/components/ButtonIcon/ButtonIcon";
 import DepthTiles from "@/components/DepthTiles/DepthTiles";
 import HomeFeed from "@/components/HomeFeed/HomeFeed";
@@ -72,7 +73,12 @@ export default function HomePage() {
 
           {/* Public review snippets */}
           <div className="home-review-snippets">
-            <h3 className="home-snippets-title">Community Reviews</h3>
+            <div className="home-snippets-head">
+              <h3 className="home-snippets-title">Community Reviews</h3>
+              <Link href="/reviews" className="home-snippets-link">
+                View all →
+              </Link>
+            </div>
             {MOCK_REVIEW_PREVIEWS.slice(0, 2).map((r) => (
               <div key={r.id} className="home-review-snippet">
                 <div className={`home-review-snippet__dot ${r.gradientClass}`} />
