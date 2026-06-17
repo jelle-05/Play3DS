@@ -1322,6 +1322,14 @@ Output:
 - Game search werkt
 - Game detailpagina toont data
 
+> **Bron-keuze:** IGDB als primaire bron (time-to-beat voedt de voortgangsschatting); RAWG/CSV optioneel later. IGDB vereist een (gratis) Twitch dev-app → credentials als env-vars, nodig bij 3.4.
+>
+> **Status (in uitvoering):**
+> - **3.1 — library uit DB (afgerond):** 10 games geseed in de `games`-tabel (via MCP); `lib/catalog.ts` met `getCatalogGames` / `getCatalogGameBySlug` (server-queries, mock-fallback zonder env); `/games` en `/games/[slug]` lezen nu uit Supabase (detail = dynamisch i.p.v. SSG). `Game`-type gesplitst in catalogus-metadata vs. optionele playthrough-velden; `gradientForSlug` voor cover-kleur zolang er geen echte cover-URL is. Dashboard/home/reviews draaien nog op mock t/m Fase 4/5.
+> - **3.2 — search (volgende):** `/search`-route met tekstzoeken + aliassen.
+> - **3.3 — admin games + CSV-import.**
+> - **3.4 — volledige catalogus via IGDB.**
+
 ---
 
 ## Fase 4 — Core playthrough tracking

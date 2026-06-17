@@ -70,7 +70,8 @@ components/
   QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
   Analytics/       Google Analytics scaffold (alleen actief met NEXT_PUBLIC_GA_ID)
 lib/
-  games.ts         Game type (+ optionele detail-metadata) + MOCK_GAMES (10 games) + STATUS_GROUPS / groupGamesByStatus / getGameById
+  games.ts         Game type + MOCK_GAMES (fallback) + STATUS_GROUPS / groupGamesByStatus / gradientForSlug
+  catalog.ts       catalogus-queries op Supabase (getCatalogGames / getCatalogGameBySlug) + mock-fallback
   homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
   reviews.ts       Review type + MOCK_REVIEWS + reviewStatusLabel / getReviewsForGame
   supabase/        Supabase client-helpers — client.ts (browser), server.ts (SSR), middleware.ts (sessie-refresh)
@@ -98,7 +99,9 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.7 | Login/register layout | ✅ Afgerond |
 | 2.1 | Supabase-foundation + DB-schema | ✅ Afgerond — schema + RLS live op Supabase |
 | 2.2 | Auth wiring (login/register/logout op echte auth) | ✅ Afgerond |
-| 3 | Game library & metadata (echte data uit DB) | ⏳ Volgende stap |
+| 3.1 | Game library uit de database (seed + catalogus-queries) | ✅ Afgerond |
+| 3.2 | Game search | ⏳ Volgende stap |
+| 3.3–3.4 | Admin games + CSV-import, volledige catalogus (IGDB) | 🔲 Gepland |
 | 4–9 | Playthroughs → public launch | 🔲 Gepland |
 
 ## Documentatie

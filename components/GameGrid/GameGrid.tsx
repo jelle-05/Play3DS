@@ -165,7 +165,7 @@ export default function GameGrid({ games, title = "All Games", hideTitle = false
               <div key={game.id} data-layout-grid-item="" className="layout-grid__item">
                 <GameCard
                   game={game}
-                  href={`/games/${game.id}`}
+                  href={`/games/${game.slug ?? game.id}`}
                   variant={undefined}
                 />
               </div>

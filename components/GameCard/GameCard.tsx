@@ -9,27 +9,40 @@ interface GameCardProps {
 }
 
 export default function GameCard({ game, href, variant = "default" }: GameCardProps) {
+  const progress = game.progressPercent ?? 0;
+  const hasPills = Boolean(game.status && game.statusLabel) || Boolean(game.playtime);
+
   const inner = (
     <>
       <div className={`game-card-cover ${game.gradientClass}`}>
-        <span className="game-card-cover-label">{game.title}</span>
+        {game.coverUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="game-card-cover-img" src={game.coverUrl} alt={game.title} loading="lazy" />
+        ) : (
+          <span className="game-card-cover-label">{game.title}</span>
+        )}
       </div>
       <div className="game-card-info">
         <p className="game-card-title">{game.title}</p>
         <p className="game-card-meta">
-          {game.genre} · {game.releaseYear}
+          {game.genre}
+          {game.releaseYear > 0 && <> · {game.releaseYear}</>}
         </p>
-        <div className="game-card-pills">
-          <span className={`pill pill-${game.status}`}>{game.statusLabel}</span>
-          {game.playtime && (
-            <span className="pill pill-surface">{game.playtime}</span>
-          )}
-        </div>
-        {game.progressPercent > 0 && game.status !== "want" && (
-          <div className="game-card-progress" role="progressbar" aria-valuenow={game.progressPercent} aria-valuemin={0} aria-valuemax={100}>
+        {hasPills && (
+          <div className="game-card-pills">
+            {game.status && game.statusLabel && (
+              <span className={`pill pill-${game.status}`}>{game.statusLabel}</span>
+            )}
+            {game.playtime && (
+              <span className="pill pill-surface">{game.playtime}</span>
+            )}
+          </div>
+        )}
+        {progress > 0 && game.status && game.status !== "want" && (
+          <div className="game-card-progress" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
             <div
               className="game-card-progress-bar"
-              style={{ width: `${game.progressPercent}%` }}
+              style={{ width: `${progress}%` }}
             />
           </div>
         )}
