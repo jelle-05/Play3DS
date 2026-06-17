@@ -54,9 +54,23 @@ const NAV_ITEMS = [
   },
 ];
 
+// Separate sign-in action (auth) — pinned to the bottom of the rail.
+const LOGIN_ITEM = {
+  href: "/login",
+  label: "Log in",
+  icon: (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      <polyline points="10 17 15 12 10 7" />
+      <line x1="15" y1="12" x2="3" y2="12" />
+    </svg>
+  ),
+};
+
 export default function NavRail() {
   const pathname = usePathname();
   const activeIndex = NAV_ITEMS.findIndex((item) => item.href === pathname);
+  const loginActive = pathname === "/login" || pathname === "/register";
 
   return (
     <>
@@ -98,12 +112,22 @@ export default function NavRail() {
             })}
           </ul>
         </div>
+
+        {/* Bottom-pinned sign-in action */}
+        <Link
+          href={LOGIN_ITEM.href}
+          className={`nav-item nav-rail-login${loginActive ? " nav-rail-login--active" : ""}`}
+          aria-current={loginActive ? "page" : undefined}
+        >
+          <span className="nav-item-icon">{LOGIN_ITEM.icon}</span>
+          <span className="nav-item-label">{LOGIN_ITEM.label}</span>
+        </Link>
       </nav>
 
-      {/* Mobile: bottom tab bar (ongewijzigd) */}
+      {/* Mobile: bottom tab bar */}
       <nav className="bottom-nav" aria-label="Main navigation">
         <ul className="bottom-nav-list" role="list">
-          {NAV_ITEMS.map((item) => {
+          {[...NAV_ITEMS, LOGIN_ITEM].map((item) => {
             const isActive = pathname === item.href;
             return (
               <li key={item.href} className="bottom-nav-item-wrapper">

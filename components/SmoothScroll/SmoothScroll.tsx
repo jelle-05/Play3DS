@@ -6,7 +6,11 @@ import gsap from "gsap";
 
 export default function SmoothScroll() {
   useEffect(() => {
-    const lenis = new Lenis();
+    // Respecteer reduced-motion: dan helemaal geen smooth scroll (native = snelst).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Iets hogere lerp = snappier/minder "zwevend" gevoel.
+    const lenis = new Lenis({ lerp: 0.13, wheelMultiplier: 1 });
 
     // Koppel Lenis aan de GSAP ticker — één RAF-loop voor beide
     function onTick(time: number) {

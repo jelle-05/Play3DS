@@ -98,14 +98,16 @@
   --transition-base: 220ms ease;
   --transition-slow: 360ms ease;
 
-  /* Blur */
-  --blur-glass: blur(16px);
-  --blur-soft:  blur(8px);
+  /* Blur (kept modest — backdrop-filter is GPU-costly when used widely) */
+  --blur-glass: blur(12px);
+  --blur-soft:  blur(6px);
 }
 
 /* ─── Design Tokens: Dark Mode ───────────────────────────── */
+/* OS preference — applies only when the user hasn't picked a theme.
+   An explicit choice (data-theme) is handled by the block below. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --color-primary:       #a78bfa;
     --color-primary-light: #c4b5fd;
     --color-primary-dark:  #7c3aed;
@@ -138,6 +140,41 @@
     --shadow-inset:    inset 0 1px 0 rgba(255, 255, 255, 0.06);
     --shadow-glow:     0 0 24px rgba(167, 139, 250, 0.24);
   }
+}
+
+/* Explicit user choice via the theme toggle (overrides OS preference). */
+:root[data-theme="dark"] {
+  --color-primary:       #a78bfa;
+  --color-primary-light: #c4b5fd;
+  --color-primary-dark:  #7c3aed;
+  --color-accent:        #22d3ee;
+  --color-accent-green:  #34d399;
+  --color-accent-pink:   #f9a8d4;
+
+  --color-bg:                   #0d0b1a;
+  --color-bg-subtle:            #130f26;
+  --color-surface:              #1a1730;
+  --color-surface-soft:         #16132b;
+  --color-surface-glass:        rgba(26, 23, 48, 0.85);
+  --color-surface-glass-border: rgba(167, 139, 250, 0.15);
+
+  --color-text:         #f0eeff;
+  --color-text-muted:   #9ca3af;
+  --color-text-soft:    #6b7280;
+  --color-text-inverse: #1e1b4b;
+
+  --color-border:        rgba(167, 139, 250, 0.14);
+  --color-border-strong: rgba(167, 139, 250, 0.28);
+
+  --gradient-primary:      linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+  --gradient-primary-soft: linear-gradient(135deg, #6d28d9 0%, #1d4ed8 100%);
+  --gradient-bg:           linear-gradient(160deg, #0d0b1a 0%, #12102a 55%, #0d1525 100%);
+
+  --shadow-soft:     0 2px 8px rgba(0, 0, 0, 0.30);
+  --shadow-card:     0 4px 20px rgba(0, 0, 0, 0.40);
+  --shadow-floating: 0 8px 40px rgba(0, 0, 0, 0.50);
+  --shadow-inset:    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-glow:     0 0 24px rgba(167, 139, 250, 0.24);
 }
 
 /* ─── Lenis smooth scroll ────────────────────────────────── */
@@ -177,11 +214,21 @@ body {
   line-height: 1.65;
   color: var(--color-text);
   background: var(--color-bg);
-  background-image: var(--gradient-bg);
-  background-attachment: fixed;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fixed gradient backdrop as its own layer.
+   Avoids `background-attachment: fixed`, which repaints the whole page on
+   every scroll frame and is a major cause of scroll jank. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--gradient-bg);
+  pointer-events: none;
 }
 
 img, picture, video, canvas, svg {
