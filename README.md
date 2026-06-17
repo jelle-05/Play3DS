@@ -30,7 +30,10 @@ npm start      # productie server starten na build
 app/
   globals.css      design tokens, reset, shell layout, utility classes
   layout.tsx       root layout — StatusBar + NavRail + main
-  page.tsx         homepage — twee-state (niet-ingelogd / ingelogd), DEMO_SIGNED_IN constante
+  page.tsx         homepage — twee-state via echte Supabase-sessie (niet-ingelogd / ingelogde feed)
+  auth/
+    actions.ts     server actions: signIn / signUp / signOut
+    confirm/route.ts  e-mailbevestiging / OTP-callback
   page.css         homepage-specifieke stijlen
   dashboard/
     page.tsx       dashboard — header + stats, Quick update, statusgroepen
@@ -93,9 +96,10 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.5 | Game detail hero | ✅ Afgerond |
 | 1.6 | Review card | ✅ Afgerond |
 | 1.7 | Login/register layout | ✅ Afgerond |
-| 2.1 | Supabase-foundation + DB-schema | ✅ Code klaar — wacht op handmatige Supabase-setup (zie [`SETUP.md`](./SETUP.md)) |
-| 2.2 | Auth wiring (login/register/logout op echte auth) | ⏳ Na Supabase-setup |
-| 3–9 | Game library → public launch | 🔲 Gepland |
+| 2.1 | Supabase-foundation + DB-schema | ✅ Afgerond — schema + RLS live op Supabase |
+| 2.2 | Auth wiring (login/register/logout op echte auth) | ✅ Afgerond |
+| 3 | Game library & metadata (echte data uit DB) | ⏳ Volgende stap |
+| 4–9 | Playthroughs → public launch | 🔲 Gepland |
 
 ## Documentatie
 

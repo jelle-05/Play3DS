@@ -3,6 +3,7 @@ import Link from "next/link";
 import ButtonIcon from "@/components/ButtonIcon/ButtonIcon";
 import DepthTiles from "@/components/DepthTiles/DepthTiles";
 import HomeFeed from "@/components/HomeFeed/HomeFeed";
+import { getSessionUser } from "@/lib/auth";
 import {
   MOCK_USER,
   MOCK_HOME_STATS,
@@ -10,14 +11,20 @@ import {
   MOCK_REVIEW_PREVIEWS,
 } from "@/lib/homeFeed";
 
-// Temporary demo toggle — replace with Supabase getSession() in Phase 2
-const DEMO_SIGNED_IN = false;
+export default async function HomePage() {
+  const session = await getSessionUser();
 
-export default function HomePage() {
-  if (DEMO_SIGNED_IN) {
+  // Ingelogd → persoonlijke feed (echte gebruiker; feed-data nog mock t/m Fase 3).
+  if (session) {
     return (
       <HomeFeed
-        user={MOCK_USER}
+        user={{
+          id: session.id,
+          username: session.username,
+          displayName: session.username,
+          avatarInitials: session.avatarInitials,
+          joinedYear: MOCK_USER.joinedYear,
+        }}
         stats={MOCK_HOME_STATS}
         activity={MOCK_ACTIVITY}
         reviews={MOCK_REVIEW_PREVIEWS}
