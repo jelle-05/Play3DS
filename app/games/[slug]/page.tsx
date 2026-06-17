@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import GameDetailHero from "@/components/GameDetailHero/GameDetailHero";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
-import { MOCK_GAMES, getGameById } from "@/lib/games";
+import { getCatalogGameBySlug } from "@/lib/catalog";
 import { getReviewsForGame } from "@/lib/reviews";
 import "./page.css";
 
@@ -10,16 +10,11 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Pre-render a static page for every known game.
-export function generateStaticParams() {
-  return MOCK_GAMES.map((game) => ({ slug: game.id }));
-}
-
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = getGameById(slug);
+  const game = await getCatalogGameBySlug(slug);
   if (!game) return { title: "Game not found" };
   return {
     title: game.title,
@@ -29,11 +24,12 @@ export async function generateMetadata({
 
 export default async function GameDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const game = getGameById(slug);
+  const game = await getCatalogGameBySlug(slug);
 
   if (!game) notFound();
 
-  const reviews = getReviewsForGame(game.id);
+  // Reviews matchen (voorlopig mock) op slug.
+  const reviews = getReviewsForGame(game.slug ?? game.id);
 
   const details: { label: string; value: string }[] = [
     { label: "Developer", value: game.developer ?? "Unknown" },

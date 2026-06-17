@@ -9,18 +9,21 @@ interface GameDetailHeroProps {
 
 // Progress copy — estimates are always framed as approximate (see fases.md §3).
 function progressLabel(game: Game): string | null {
+  if (!game.status) return null; // catalogusgame zonder playthrough
   if (game.status === "completed") return "100% complete";
   if (game.status === "want") return "Not started";
-  if (game.progressPercent > 0) return `~${game.progressPercent}% · estimated`;
+  if ((game.progressPercent ?? 0) > 0) {
+    return `~${game.progressPercent}% · estimated`;
+  }
   return null;
 }
 
 export default function GameDetailHero({ game }: GameDetailHeroProps) {
   const progress = progressLabel(game);
   const ctaLabel =
-    game.status === "want" || game.playtime === null
-      ? "Start playthrough"
-      : "Continue playthrough";
+    game.status && game.status !== "want" && game.playtime
+      ? "Continue playthrough"
+      : "Start playthrough";
 
   return (
     <div className="game-detail">
@@ -45,7 +48,9 @@ export default function GameDetailHero({ game }: GameDetailHeroProps) {
           {/* Info */}
           <div className="game-hero__info">
             <div className="game-hero__eyebrow">
-              <span className={`pill pill-${game.status}`}>{game.statusLabel}</span>
+              {game.status && game.statusLabel && (
+                <span className={`pill pill-${game.status}`}>{game.statusLabel}</span>
+              )}
               <span className="game-hero__platform">{game.platform}</span>
             </div>
 
@@ -58,9 +63,9 @@ export default function GameDetailHero({ game }: GameDetailHeroProps) {
 
             {/* Stat pills */}
             <div className="game-hero__pills">
-              <span className="pill pill-surface">
-                ▶ {game.playtime ?? "No playtime yet"}
-              </span>
+              {game.playtime && (
+                <span className="pill pill-surface">▶ {game.playtime}</span>
+              )}
               {progress && <span className="pill pill-surface">{progress}</span>}
               {typeof game.rating === "number" && (
                 <span className="pill pill-surface">★ {game.rating}/10</span>
@@ -73,7 +78,7 @@ export default function GameDetailHero({ game }: GameDetailHeroProps) {
             </div>
 
             {/* Progress bar (only when there is meaningful progress) */}
-            {game.progressPercent > 0 && game.status !== "want" && (
+            {(game.progressPercent ?? 0) > 0 && game.status && game.status !== "want" && (
               <div className="game-hero__progress">
                 <div
                   className="game-hero__progress-track"

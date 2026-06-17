@@ -2,22 +2,26 @@ export type GameStatus = "playing" | "completed" | "paused" | "dropped" | "want"
 
 export interface Game {
   id: string;
+  slug?: string; // routing key (DB-slug); mock-data gebruikt id als slug
   title: string;
   platform: string;
-  status: GameStatus;
-  statusLabel: string;
-  playtime: string | null;
-  progressPercent: number;
   genre: string;
   releaseYear: number;
   gradientClass: string;
-  rating?: number;
-  // Optional richer metadata — used on the game detail page. Games may omit
-  // these (mock prototype); the UI falls back gracefully when missing.
+  coverUrl?: string | null;
+  metadataStatus?: "basic" | "enriched" | "verified";
+  // Optionele metadata — getoond op de detailpagina; mag ontbreken (fallback).
   developer?: string;
   publisher?: string;
   description?: string;
   averagePlaytime?: string;
+  // Playthrough-/UI-velden — optioneel; alleen in mock/dashboard-context
+  // (een catalogusgame heeft deze niet, een getrackte game wel).
+  status?: GameStatus;
+  statusLabel?: string;
+  playtime?: string | null;
+  progressPercent?: number;
+  rating?: number;
 }
 
 export const MOCK_GAMES: Game[] = [
@@ -227,12 +231,33 @@ export function groupGamesByStatus(games: Game[]): Record<GameStatus, Game[]> {
     dropped: [],
   };
   for (const game of games) {
-    groups[game.status].push(game);
+    if (game.status) groups[game.status].push(game);
   }
   return groups;
 }
 
-// Look up a single game by its id/slug.
+// Look up a single mock game by its id/slug.
 export function getGameById(id: string): Game | undefined {
   return MOCK_GAMES.find((game) => game.id === id);
+}
+
+// Deterministische gradient per slug — geeft elke catalogusgame een vaste,
+// speelse cover-kleur zolang er nog geen echte cover-URL is.
+export const GRADIENT_CLASSES = [
+  "game-card-cover--purple",
+  "game-card-cover--mint",
+  "game-card-cover--warm",
+  "game-card-cover--pink",
+  "game-card-cover--blue",
+  "game-card-cover--teal",
+  "game-card-cover--red",
+  "game-card-cover--orange",
+];
+
+export function gradientForSlug(slug: string): string {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+  }
+  return GRADIENT_CLASSES[hash % GRADIENT_CLASSES.length];
 }
