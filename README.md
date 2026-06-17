@@ -79,7 +79,7 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 
 > **Data:** UI draait nog op placeholder-data (`lib/games.ts`, `lib/homeFeed.ts`, `lib/reviews.ts`). Vanaf Fase 2.2 wordt dit aan Supabase gekoppeld.
 >
-> **Setup:** Supabase/Vercel-koppeling vereist handmatige stappen — zie [`SETUP.md`](./SETUP.md). De Supabase-code is veilig inert zonder env-vars.
+> **Setup:** Supabase/Vercel-koppeling vereist handmatige stappen — zie [`SETUP.md`](./SETUP.md). De Supabase-code is veilig inert zonder env-vars. Optioneel kan Claude Code via een lokale, gitignored `.mcp.json` (Supabase MCP-server) migraties draaien — zie `SETUP.md` §7.
 
 ## Fase-status
 

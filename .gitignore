@@ -29,6 +29,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# MCP config — bevat lokale tokens, niet committen
+.mcp.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

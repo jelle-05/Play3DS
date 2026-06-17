@@ -60,3 +60,19 @@ zonder env-vars.
 
 > `.env.example` bevat de namen van alle variabelen. Lokaal testen (optioneel,
 > alleen Claude Code) kan via een `.env.local` met dezelfde namen.
+
+## 7. (Optioneel) Supabase MCP voor Claude Code
+
+Om Claude Code rechtstreeks migraties te laten draaien en de database te laten
+inspecteren, kan een **Supabase MCP-server** worden gekoppeld via een lokaal
+`.mcp.json` in de projectroot:
+
+- `.mcp.json` staat in `.gitignore` — het bevat een **Personal Access Token** en
+  hoort **nooit** in de repo.
+- De server is gescope't op één project via `--project-ref`.
+- Na het plaatsen van het bestand: **Claude Code herstarten** en de `supabase`-
+  server **goedkeuren** (project-scoped servers vragen eenmalig toestemming).
+- De token is op elk moment in te trekken in Supabase → Account → Access Tokens.
+
+Dit is puur een ontwikkelhulpmiddel; het staat los van de app-runtime (die de
+keys uit de Vercel env-vars gebruikt).
