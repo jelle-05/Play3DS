@@ -1,8 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { signOut } from "@/app/auth/actions";
 import "./NavRail.css";
 
 const NAV_ITEMS = [
@@ -54,23 +56,39 @@ const NAV_ITEMS = [
   },
 ];
 
-// Separate sign-in action (auth) — pinned to the bottom of the rail.
-const LOGIN_ITEM = {
-  href: "/login",
-  label: "Log in",
-  icon: (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-      <polyline points="10 17 15 12 10 7" />
-      <line x1="15" y1="12" x2="3" y2="12" />
-    </svg>
-  ),
-};
+const LOGIN_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+    <polyline points="10 17 15 12 10 7" />
+    <line x1="15" y1="12" x2="3" y2="12" />
+  </svg>
+);
+
+const LOGOUT_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
 
 export default function NavRail() {
   const pathname = usePathname();
   const activeIndex = NAV_ITEMS.findIndex((item) => item.href === pathname);
   const loginActive = pathname === "/login" || pathname === "/register";
+
+  // Auth-state (client-side) — bepaalt login- vs logout-actie.
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthed(!!session?.user);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   return (
     <>
@@ -88,7 +106,6 @@ export default function NavRail() {
               : undefined
           }
         >
-          {/* Sliding indicator — beweegt naar het actieve item */}
           <div
             className={`nav-rail-indicator${activeIndex < 0 ? " nav-rail-indicator--hidden" : ""}`}
             aria-hidden="true"
@@ -113,21 +130,32 @@ export default function NavRail() {
           </ul>
         </div>
 
-        {/* Bottom-pinned sign-in action */}
-        <Link
-          href={LOGIN_ITEM.href}
-          className={`nav-item nav-rail-login${loginActive ? " nav-rail-login--active" : ""}`}
-          aria-current={loginActive ? "page" : undefined}
-        >
-          <span className="nav-item-icon">{LOGIN_ITEM.icon}</span>
-          <span className="nav-item-label">{LOGIN_ITEM.label}</span>
-        </Link>
+        {/* Bottom-pinned auth-actie */}
+        <div className="nav-rail-foot">
+          {authed ? (
+            <form action={signOut}>
+              <button type="submit" className="nav-item">
+                <span className="nav-item-icon">{LOGOUT_ICON}</span>
+                <span className="nav-item-label">Log out</span>
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className={`nav-item${loginActive ? " nav-rail-login--active" : ""}`}
+              aria-current={loginActive ? "page" : undefined}
+            >
+              <span className="nav-item-icon">{LOGIN_ICON}</span>
+              <span className="nav-item-label">Log in</span>
+            </Link>
+          )}
+        </div>
       </nav>
 
       {/* Mobile: bottom tab bar */}
       <nav className="bottom-nav" aria-label="Main navigation">
         <ul className="bottom-nav-list" role="list">
-          {[...NAV_ITEMS, LOGIN_ITEM].map((item) => {
+          {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
             return (
               <li key={item.href} className="bottom-nav-item-wrapper">
@@ -142,6 +170,26 @@ export default function NavRail() {
               </li>
             );
           })}
+
+          <li className="bottom-nav-item-wrapper">
+            {authed ? (
+              <form action={signOut} className="bottom-nav-form">
+                <button type="submit" className="bottom-nav-item">
+                  <span className="bottom-nav-icon">{LOGOUT_ICON}</span>
+                  <span className="bottom-nav-label">Log out</span>
+                </button>
+              </form>
+            ) : (
+              <Link
+                href="/login"
+                className={`bottom-nav-item${loginActive ? " bottom-nav-item--active" : ""}`}
+                aria-current={loginActive ? "page" : undefined}
+              >
+                <span className="bottom-nav-icon">{LOGIN_ICON}</span>
+                <span className="bottom-nav-label">Log in</span>
+              </Link>
+            )}
+          </li>
         </ul>
       </nav>
     </>

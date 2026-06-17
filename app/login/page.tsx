@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import AuthForm from "@/components/AuthForm/AuthForm";
+import { getSessionUser } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Log in",
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  if (await getSessionUser()) redirect("/dashboard");
+
   return (
     <div className="auth-page">
       <div className="auth-card">

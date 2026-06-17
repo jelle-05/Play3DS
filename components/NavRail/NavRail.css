@@ -129,9 +129,18 @@
   line-height: 1;
 }
 
-/* ── Bottom-pinned sign-in action ── */
-.nav-rail-login {
+/* ── Bottom-pinned auth-actie ── */
+.nav-rail-foot {
   margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-rail-foot form {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .nav-rail-login--active {
@@ -175,6 +184,11 @@
 }
 
 .bottom-nav-item-wrapper {
+  flex: 1;
+  display: flex;
+}
+
+.bottom-nav-form {
   flex: 1;
   display: flex;
 }
