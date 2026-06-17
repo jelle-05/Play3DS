@@ -1,0 +1,223 @@
+/* ─── Game detail hero ───────────────────────────────────────────────── */
+
+.game-detail {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Full-bleed blurred backdrop ── */
+.game-detail__bg {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 480px;
+  z-index: 0;
+  pointer-events: none;
+  /* Fade the backdrop into the page background towards the bottom */
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 30%, transparent 100%);
+}
+
+.game-detail__bg-fill {
+  position: absolute;
+  inset: -25%;
+  filter: blur(70px) saturate(1.15);
+  opacity: 0.55;
+}
+
+@media (prefers-color-scheme: dark) {
+  .game-detail__bg-fill {
+    opacity: 0.4;
+  }
+}
+
+/* ── Inner container ── */
+.game-detail__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-16);
+}
+
+.game-detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--blur-soft);
+  -webkit-backdrop-filter: var(--blur-soft);
+  border: 1px solid var(--color-border);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.game-detail__back:hover {
+  color: var(--color-primary);
+  transform: translateX(-2px);
+}
+
+/* ── Hero layout ── */
+.game-hero {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-8);
+  align-items: end;
+  margin-top: var(--space-8);
+}
+
+/* ── Cover ── */
+.game-hero__cover-wrap {
+  position: relative;
+}
+
+.game-hero__cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-floating);
+  border: 1px solid var(--color-surface-glass-border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.game-hero__cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.game-hero__cover-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  line-height: 1.25;
+}
+
+/* Gradient variants (self-contained — same palette as GameCard) */
+.game-hero__cover.game-card-cover--purple,
+.game-detail__bg-fill.game-card-cover--purple { background: linear-gradient(155deg, #9333ea, #3b82f6); }
+.game-hero__cover.game-card-cover--mint,
+.game-detail__bg-fill.game-card-cover--mint   { background: linear-gradient(155deg, #34d399, #06b6d4); }
+.game-hero__cover.game-card-cover--warm,
+.game-detail__bg-fill.game-card-cover--warm   { background: linear-gradient(155deg, #f59e0b, #ef4444); }
+.game-hero__cover.game-card-cover--pink,
+.game-detail__bg-fill.game-card-cover--pink   { background: linear-gradient(155deg, #f472b6, #a78bfa); }
+.game-hero__cover.game-card-cover--blue,
+.game-detail__bg-fill.game-card-cover--blue   { background: linear-gradient(155deg, #3b82f6, #1d4ed8); }
+.game-hero__cover.game-card-cover--teal,
+.game-detail__bg-fill.game-card-cover--teal   { background: linear-gradient(155deg, #06b6d4, #0e7490); }
+.game-hero__cover.game-card-cover--red,
+.game-detail__bg-fill.game-card-cover--red    { background: linear-gradient(155deg, #ef4444, #b91c1c); }
+.game-hero__cover.game-card-cover--orange,
+.game-detail__bg-fill.game-card-cover--orange { background: linear-gradient(155deg, #f97316, #ea580c); }
+
+/* ── Info ── */
+.game-hero__info {
+  min-width: 0;
+  padding-bottom: var(--space-2);
+}
+
+.game-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.game-hero__platform {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.game-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+
+.game-hero__meta {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+}
+
+.game-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+/* ── Progress ── */
+.game-hero__progress {
+  max-width: 420px;
+  margin-bottom: var(--space-6);
+}
+
+.game-hero__progress-track {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.game-hero__progress-bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-pill);
+  min-width: 8px;
+}
+
+/* ── Actions ── */
+.game-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .game-detail__inner {
+    padding: var(--space-4) var(--space-4) var(--space-12);
+  }
+
+  .game-detail__bg {
+    height: 360px;
+  }
+
+  .game-hero {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    align-items: start;
+    margin-top: var(--space-5);
+  }
+
+  .game-hero__cover-wrap {
+    max-width: 200px;
+  }
+
+  .game-hero__actions {
+    width: 100%;
+  }
+}

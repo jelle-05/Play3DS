@@ -1,0 +1,78 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import GameDetailHero from "@/components/GameDetailHero/GameDetailHero";
+import { MOCK_GAMES, getGameById } from "@/lib/games";
+import "./page.css";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+// Pre-render a static page for every known game.
+export function generateStaticParams() {
+  return MOCK_GAMES.map((game) => ({ slug: game.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const game = getGameById(slug);
+  if (!game) return { title: "Game not found" };
+  return {
+    title: game.title,
+    description: game.description ?? `Track your ${game.title} playthrough.`,
+  };
+}
+
+export default async function GameDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const game = getGameById(slug);
+
+  if (!game) notFound();
+
+  const details: { label: string; value: string }[] = [
+    { label: "Developer", value: game.developer ?? "Unknown" },
+    { label: "Publisher", value: game.publisher ?? "Unknown" },
+    { label: "Genre", value: game.genre },
+    { label: "Release year", value: String(game.releaseYear) },
+    { label: "Platform", value: game.platform },
+    { label: "Average playtime", value: game.averagePlaytime ?? "Unknown" },
+  ];
+
+  return (
+    <div className="game-detail-page">
+      <GameDetailHero game={game} />
+
+      <div className="game-detail-body">
+        {/* About */}
+        <section className="game-detail-section">
+          <h2 className="feed-section-title">About</h2>
+          <p className="game-detail-about">
+            {game.description ??
+              "No description yet for this game. You can still track your own playtime and progress."}
+          </p>
+        </section>
+
+        {/* Details */}
+        <section className="game-detail-section">
+          <h2 className="feed-section-title">Details</h2>
+          <dl className="game-detail-grid">
+            {details.map((d) => (
+              <div key={d.label} className="game-detail-grid__row">
+                <dt className="game-detail-grid__label">{d.label}</dt>
+                <dd className="game-detail-grid__value">{d.value}</dd>
+              </div>
+            ))}
+          </dl>
+          {!game.averagePlaytime && (
+            <p className="game-detail-note">
+              Average playtime unknown. You can still track your own playtime and
+              set progress manually.
+            </p>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}

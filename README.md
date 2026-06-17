@@ -37,6 +37,9 @@ app/
     page.css       dashboard-specifieke stijlen
   games/
     page.tsx       game-bibliotheek met slider + grid
+    [slug]/
+      page.tsx     game detail — hero + about/details (SSG per game)
+      page.css     detailpagina-specifieke stijlen
 components/
   NavRail/         linker nav-rail (desktop) + bottom tab bar (mobiel)
   StatusBar/       vaste statusbalk bovenaan
@@ -47,13 +50,14 @@ components/
   DepthTiles/      Osmo Depth Tiles Infinite Loop — 3D game-carousel
   ToggleSwitch/    Osmo Toggle Switch — gesegmenteerde statusfilter
   LibraryFilter/   game-bibliotheek met statusfilter (op /games)
-  DashboardLibrary/ dashboard-statusgroepen met ToggleSwitch-filter + empty states
+  DashboardLibrary/ dashboard-statusgroepen met ToggleSwitch-filter + empty states (GSAP Flip)
+  GameDetailHero/  full-bleed game detail hero (cover, status/playtime/progress-pills, CTA)
   HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
   HomeAuthPanel/   login/register prototype-panel (tabs, placeholder fields; geen echte auth)
   ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
   QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
 lib/
-  games.ts         Game type + MOCK_GAMES (10 placeholder 3DS-games) + STATUS_GROUPS / groupGamesByStatus
+  games.ts         Game type (+ optionele detail-metadata) + MOCK_GAMES (10 games) + STATUS_GROUPS / groupGamesByStatus / getGameById
   homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
 designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
@@ -71,8 +75,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.2 | Game card & grid | ✅ Afgerond |
 | 1.3 | Home/app-feed (niet-ingelogd + ingelogd prototype) | ✅ Afgerond |
 | 1.4 | Dashboard & Quick update | ✅ Afgerond |
-| 1.5 | Game detail hero | ⏳ Volgende stap |
-| 1.6 | Review card | 🔲 Gepland |
+| 1.5 | Game detail hero | ✅ Afgerond |
+| 1.6 | Review card | ⏳ Volgende stap |
 | 1.7 | Login/register layout | 🔲 Gepland |
 | 2–9 | Technical foundation → public launch | 🔲 Gepland |
 
