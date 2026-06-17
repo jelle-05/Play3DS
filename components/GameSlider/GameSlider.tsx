@@ -233,7 +233,7 @@ export default function GameSlider({ games, title = "Now Playing" }: GameSliderP
           <div data-gsap-slider-list="" className="gsap-slider__list">
             {games.map((game) => (
               <div key={game.id} data-gsap-slider-item="" className="gsap-slider__item">
-                <GameCard game={game} />
+                <GameCard game={game} href={`/games/${game.id}`} />
               </div>
             ))}
           </div>
