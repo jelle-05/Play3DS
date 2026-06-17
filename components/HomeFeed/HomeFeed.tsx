@@ -110,7 +110,12 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
               </div>
               <div className="feed-compact-grid">
                 {SUGGESTED_GAMES.map((game) => (
-                  <GameCard key={game.id} game={game} variant="compact" />
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    variant="compact"
+                    href={`/games/${game.id}`}
+                  />
                 ))}
               </div>
             </section>
