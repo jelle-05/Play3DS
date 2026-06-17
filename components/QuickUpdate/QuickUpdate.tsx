@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import type { Game } from "@/lib/games";
 import "./QuickUpdate.css";
 
@@ -46,9 +47,9 @@ export default function QuickUpdate({ games }: QuickUpdateProps) {
         </div>
         <p className="quick-update__empty">
           No active playthroughs.{" "}
-          <a href="/games" className="quick-update__link">
+          <Link href="/games" className="quick-update__link">
             Start one →
-          </a>
+          </Link>
         </p>
       </section>
     );

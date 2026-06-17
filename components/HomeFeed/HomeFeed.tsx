@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import GameCard from "@/components/GameCard/GameCard";
 import ActivityFeed from "@/components/ActivityFeed/ActivityFeed";
@@ -79,9 +80,9 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
           <section className="feed-section">
             <div className="feed-section-header">
               <h2 className="feed-section-title">Active Playthroughs</h2>
-              <a href="/games" className="feed-section-link">
+              <Link href="/games" className="feed-section-link">
                 See all →
-              </a>
+              </Link>
             </div>
             <div className="feed-active-grid">
               {ACTIVE_GAMES.map((game) => (
@@ -103,9 +104,9 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
             <section className="feed-section">
               <div className="feed-section-header">
                 <h2 className="feed-section-title">Suggested for You</h2>
-                <a href="/games" className="feed-section-link">
+                <Link href="/games" className="feed-section-link">
                   Browse →
-                </a>
+                </Link>
               </div>
               <div className="feed-compact-grid">
                 {SUGGESTED_GAMES.map((game) => (
