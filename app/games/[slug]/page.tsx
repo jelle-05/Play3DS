@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import GameDetailHero from "@/components/GameDetailHero/GameDetailHero";
+import ReviewCard from "@/components/ReviewCard/ReviewCard";
 import { MOCK_GAMES, getGameById } from "@/lib/games";
+import { getReviewsForGame } from "@/lib/reviews";
 import "./page.css";
 
 interface PageProps {
@@ -30,6 +32,8 @@ export default async function GameDetailPage({ params }: PageProps) {
   const game = getGameById(slug);
 
   if (!game) notFound();
+
+  const reviews = getReviewsForGame(game.id);
 
   const details: { label: string; value: string }[] = [
     { label: "Developer", value: game.developer ?? "Unknown" },
@@ -73,6 +77,21 @@ export default async function GameDetailPage({ params }: PageProps) {
           )}
         </section>
       </div>
+
+      {/* Reviews for this game */}
+      {reviews.length > 0 && (
+        <section className="game-detail-reviews">
+          <div className="game-detail-reviews__header">
+            <h2 className="feed-section-title">Reviews</h2>
+            <span className="pill pill-surface">{reviews.length}</span>
+          </div>
+          <div className="game-detail-reviews__grid">
+            {reviews.map((review) => (
+              <ReviewCard key={review.id} review={review} showGame={false} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

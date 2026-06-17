@@ -126,12 +126,30 @@
 }
 
 /* ── Review snippets ── */
+.home-snippets-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
 .home-snippets-title {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 700;
   color: var(--color-text);
-  margin-bottom: var(--space-4);
+}
+
+.home-snippets-link {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.home-snippets-link:hover {
+  text-decoration: underline;
 }
 
 .home-review-snippets {
