@@ -17,16 +17,6 @@ begin
 end;
 $$;
 
--- Is de huidige gebruiker een admin?
-create or replace function public.is_admin()
-returns boolean language sql security definer stable
-set search_path = public as $$
-  select exists (
-    select 1 from public.profiles
-    where user_id = auth.uid() and role = 'admin'
-  );
-$$;
-
 -- ── profiles ────────────────────────────────────────────────────────────────
 create table if not exists public.profiles (
   id uuid primary key default gen_random_uuid(),
@@ -42,6 +32,17 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Is de huidige gebruiker een admin? (na profiles gedefinieerd — SQL-functie­bodies
+-- worden bij aanmaak gevalideerd, dus de tabel moet al bestaan.)
+create or replace function public.is_admin()
+returns boolean language sql security definer stable
+set search_path = public as $$
+  select exists (
+    select 1 from public.profiles
+    where user_id = auth.uid() and role = 'admin'
+  );
+$$;
 
 -- ── games ─────────────────────────────────────────────────────────────────
 create table if not exists public.games (
