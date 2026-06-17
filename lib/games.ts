@@ -12,6 +12,12 @@ export interface Game {
   releaseYear: number;
   gradientClass: string;
   rating?: number;
+  // Optional richer metadata — used on the game detail page. Games may omit
+  // these (mock prototype); the UI falls back gracefully when missing.
+  developer?: string;
+  publisher?: string;
+  description?: string;
+  averagePlaytime?: string;
 }
 
 export const MOCK_GAMES: Game[] = [
@@ -27,6 +33,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2011,
     gradientClass: "game-card-cover--purple",
     rating: 10,
+    developer: "Grezzo",
+    publisher: "Nintendo",
+    averagePlaytime: "~25h",
+    description:
+      "A ground-up 3DS remake of the N64 classic, with sharper visuals, gyro aiming and the extra-tough Master Quest. Guide Link across time to stop Ganondorf.",
   },
   {
     id: "pokemon-x",
@@ -40,6 +51,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2013,
     gradientClass: "game-card-cover--mint",
     rating: 8,
+    developer: "Game Freak",
+    publisher: "The Pokémon Company",
+    averagePlaytime: "~32h",
+    description:
+      "The first fully 3D mainline Pokémon adventure, set in the France-inspired Kalos region and introducing Mega Evolution and the Fairy type.",
   },
   {
     id: "fire-emblem-awakening",
@@ -53,6 +69,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2012,
     gradientClass: "game-card-cover--warm",
     rating: 9,
+    developer: "Intelligent Systems",
+    publisher: "Nintendo",
+    averagePlaytime: "~40h",
+    description:
+      "The strategy RPG that revived the series, blending tactical grid battles with deep character bonds, optional permadeath and a sweeping time-travel story.",
   },
   {
     id: "animal-crossing-nl",
@@ -65,6 +86,11 @@ export const MOCK_GAMES: Game[] = [
     genre: "Simulation",
     releaseYear: 2012,
     gradientClass: "game-card-cover--pink",
+    developer: "Nintendo EAD",
+    publisher: "Nintendo",
+    averagePlaytime: "Endless",
+    description:
+      "Become mayor of your own town in this relaxed life sim — decorate, fish, fossil-hunt and pay off your ever-growing house at your own pace.",
   },
   {
     id: "mario-kart-7",
@@ -78,6 +104,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2011,
     gradientClass: "game-card-cover--blue",
     rating: 9,
+    developer: "Nintendo EAD / Retro Studios",
+    publisher: "Nintendo",
+    averagePlaytime: "~15h",
+    description:
+      "Mario Kart takes to the air and underwater with gliders and propellers, plus kart customization and a strong online multiplayer suite.",
   },
   {
     id: "super-mario-3d-land",
@@ -91,6 +122,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2011,
     gradientClass: "game-card-cover--teal",
     rating: 9,
+    developer: "Nintendo EAD",
+    publisher: "Nintendo",
+    averagePlaytime: "~10h",
+    description:
+      "A bridge between 2D and 3D Mario built around stereoscopic depth, the Tanooki suit and bite-sized levels perfect for handheld play.",
   },
   {
     id: "pokemon-y",
@@ -104,6 +140,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2013,
     gradientClass: "game-card-cover--red",
     rating: 6,
+    developer: "Game Freak",
+    publisher: "The Pokémon Company",
+    averagePlaytime: "~32h",
+    description:
+      "The companion version to Pokémon X, featuring the legendary Yveltal and its own set of exclusive Pokémon in the Kalos region.",
   },
   {
     id: "kirby-planet-robobot",
@@ -116,6 +157,11 @@ export const MOCK_GAMES: Game[] = [
     genre: "Platformer",
     releaseYear: 2016,
     gradientClass: "game-card-cover--orange",
+    developer: "HAL Laboratory",
+    publisher: "Nintendo",
+    averagePlaytime: "~8h",
+    description:
+      "Kirby pilots a transforming Robobot Armor to fight off a mechanized invasion, combining classic copy abilities with mech-powered mayhem.",
   },
   {
     id: "metroid-samus-returns",
@@ -129,6 +175,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2017,
     gradientClass: "game-card-cover--purple",
     rating: 8,
+    developer: "MercurySteam",
+    publisher: "Nintendo",
+    averagePlaytime: "~12h",
+    description:
+      "A full reimagining of Metroid II, adding the melee counter, 360° aiming and gorgeous 2.5D visuals to Samus's hunt across planet SR388.",
   },
   {
     id: "bravely-default",
@@ -142,6 +193,11 @@ export const MOCK_GAMES: Game[] = [
     releaseYear: 2013,
     gradientClass: "game-card-cover--mint",
     rating: 8,
+    developer: "Silicon Studio",
+    publisher: "Square Enix",
+    averagePlaytime: "~50h",
+    description:
+      "A throwback JRPG with a flexible job system and the risk/reward Brave & Default battle mechanic, wrapped in hand-painted watercolor towns.",
   },
 ];
 
@@ -174,4 +230,9 @@ export function groupGamesByStatus(games: Game[]): Record<GameStatus, Game[]> {
     groups[game.status].push(game);
   }
   return groups;
+}
+
+// Look up a single game by its id/slug.
+export function getGameById(id: string): Game | undefined {
+  return MOCK_GAMES.find((game) => game.id === id);
 }
