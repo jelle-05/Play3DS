@@ -1,4 +1,4 @@
-/* ─── Dashboard library — status groups + filter ─────────────────────── */
+/* ─── Dashboard library — status groups + animated filter ────────────── */
 
 .dashboard-library {
   margin-top: var(--space-2);
@@ -6,7 +6,7 @@
 
 /* Filter toggle — scrollable on narrow screens (it holds 6 options). */
 .dashboard-library__controls {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -21,7 +21,19 @@
   min-width: 100%;
 }
 
-/* ── Status group ── */
+/* ── Status group ──
+   The <section> itself carries no spacing. All vertical rhythm lives on the
+   header and grid, which are hidden (display:none) when filtered out — so a
+   hidden group collapses to zero height with no leftover gaps. */
+.dashboard-group__header {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+}
+
+.dashboard-groups > .dashboard-group:first-child .dashboard-group__header {
+  margin-top: 0;
+}
+
 .dashboard-group__count {
   display: inline-flex;
   align-items: center;
@@ -44,6 +56,20 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: var(--space-4);
+}
+
+/* Card wrapper — Flip target; lets the GameCard fill its grid cell. */
+.dashboard-card {
+  display: flex;
+}
+
+.dashboard-card > .game-card {
+  width: 100%;
+}
+
+/* Filtered-out elements collapse out of flow; Flip animates the transition. */
+.is-filtered-out {
+  display: none;
 }
 
 /* ── Empty state ── */
