@@ -16,6 +16,15 @@ const NAV_ITEMS = [
     ),
   },
   {
+    href: "/dashboard",
+    label: "Dashboard",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M3 3h8v10H3zm0 12h8v6H3zm10 0h8V11h-8zm0-12v6h8V3z" />
+      </svg>
+    ),
+  },
+  {
     href: "/games",
     label: "Library",
     icon: (

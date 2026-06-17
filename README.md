@@ -32,6 +32,9 @@ app/
   layout.tsx       root layout — StatusBar + NavRail + main
   page.tsx         homepage — twee-state (niet-ingelogd / ingelogd), DEMO_SIGNED_IN constante
   page.css         homepage-specifieke stijlen
+  dashboard/
+    page.tsx       dashboard — header + stats, Quick update, statusgroepen
+    page.css       dashboard-specifieke stijlen
   games/
     page.tsx       game-bibliotheek met slider + grid
 components/
@@ -44,12 +47,13 @@ components/
   DepthTiles/      Osmo Depth Tiles Infinite Loop — 3D game-carousel
   ToggleSwitch/    Osmo Toggle Switch — gesegmenteerde statusfilter
   LibraryFilter/   game-bibliotheek met statusfilter (op /games)
+  DashboardLibrary/ dashboard-statusgroepen met ToggleSwitch-filter + empty states
   HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
   HomeAuthPanel/   login/register prototype-panel (tabs, placeholder fields; geen echte auth)
   ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
   QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
 lib/
-  games.ts         Game type + MOCK_GAMES (10 placeholder 3DS-games)
+  games.ts         Game type + MOCK_GAMES (10 placeholder 3DS-games) + STATUS_GROUPS / groupGamesByStatus
   homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
 designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
@@ -66,8 +70,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.1 | Foundation & shell | ✅ Afgerond |
 | 1.2 | Game card & grid | ✅ Afgerond |
 | 1.3 | Home/app-feed (niet-ingelogd + ingelogd prototype) | ✅ Afgerond |
-| 1.4 | Dashboard & Quick update | ⏳ Volgende stap |
-| 1.5 | Game detail hero | 🔲 Gepland |
+| 1.4 | Dashboard & Quick update | ✅ Afgerond |
+| 1.5 | Game detail hero | ⏳ Volgende stap |
 | 1.6 | Review card | 🔲 Gepland |
 | 1.7 | Login/register layout | 🔲 Gepland |
 | 2–9 | Technical foundation → public launch | 🔲 Gepland |

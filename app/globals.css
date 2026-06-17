@@ -331,3 +331,39 @@ button {
   font-weight: 700;
   line-height: 1.15;
 }
+
+/* ─── Utility: Section header (shared by feed, dashboard, QuickUpdate) ── */
+.feed-section {
+  margin-bottom: var(--space-6);
+}
+
+.feed-section:last-child {
+  margin-bottom: 0;
+}
+
+.feed-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.feed-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.feed-section-link {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.feed-section-link:hover {
+  text-decoration: underline;
+}

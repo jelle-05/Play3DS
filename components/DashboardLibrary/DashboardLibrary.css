@@ -1,0 +1,72 @@
+/* ─── Dashboard library — status groups + filter ─────────────────────── */
+
+.dashboard-library {
+  margin-top: var(--space-2);
+}
+
+/* Filter toggle — scrollable on narrow screens (it holds 6 options). */
+.dashboard-library__controls {
+  margin-bottom: var(--space-6);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.dashboard-library__controls::-webkit-scrollbar {
+  display: none;
+}
+
+.dashboard-library__controls .toggle-switch {
+  width: max-content;
+  min-width: 100%;
+}
+
+/* ── Status group ── */
+.dashboard-group__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  margin-left: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  vertical-align: middle;
+}
+
+.dashboard-group__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ── Empty state ── */
+.dashboard-group__empty {
+  padding: var(--space-6);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .dashboard-group__grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-group__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

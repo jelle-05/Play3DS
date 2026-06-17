@@ -144,3 +144,34 @@ export const MOCK_GAMES: Game[] = [
     rating: 8,
   },
 ];
+
+/* ── Status groups & helpers (used by the dashboard) ─────────────────── */
+
+export interface StatusGroup {
+  status: GameStatus;
+  label: string;
+}
+
+// Display order for the dashboard status groups — active states first.
+export const STATUS_GROUPS: StatusGroup[] = [
+  { status: "playing", label: "Playing" },
+  { status: "paused", label: "Paused" },
+  { status: "want", label: "Want to Play" },
+  { status: "completed", label: "Completed" },
+  { status: "dropped", label: "Dropped" },
+];
+
+// Group a list of games by their status, keeping every status key present.
+export function groupGamesByStatus(games: Game[]): Record<GameStatus, Game[]> {
+  const groups: Record<GameStatus, Game[]> = {
+    playing: [],
+    paused: [],
+    want: [],
+    completed: [],
+    dropped: [],
+  };
+  for (const game of games) {
+    groups[game.status].push(game);
+  }
+  return groups;
+}
