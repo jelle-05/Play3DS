@@ -1288,6 +1288,11 @@ Output:
 - Login/register technisch mogelijk
 - Eerste deploy op Vercel
 
+> **Status (in uitvoering):**
+> - **2.1 — foundation (code klaar):** `@supabase/ssr` + `@supabase/supabase-js`; client-helpers (`lib/supabase/client.ts`, `server.ts`, `middleware.ts`); root `middleware.ts` voor sessie-refresh (veilig no-op zonder env-vars); `.env.example`; volledige DB-schema + RLS + triggers in `supabase/migrations/0001_initial_schema.sql`; Google Analytics-scaffold (`components/Analytics`, alleen actief met `NEXT_PUBLIC_GA_ID`); handmatige stappen in `SETUP.md`.
+> - **Handmatig (eigenaar):** Supabase-project aanmaken, SQL-migratie draaien, auth configureren, env-vars in Vercel zetten — zie `SETUP.md`.
+> - **2.2 — auth wiring (volgt na setup):** `/login`, `/register`, logout op echte Supabase Auth + sessie-bewuste UI (nav, homepage signed-in state).
+
 ---
 
 ## Fase 3 — Game library & metadata

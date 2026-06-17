@@ -65,16 +65,21 @@ components/
   ThemeToggle/     light/dark toggle in de StatusBar (data-theme + localStorage)
   ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
   QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
+  Analytics/       Google Analytics scaffold (alleen actief met NEXT_PUBLIC_GA_ID)
 lib/
   games.ts         Game type (+ optionele detail-metadata) + MOCK_GAMES (10 games) + STATUS_GROUPS / groupGamesByStatus / getGameById
   homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
   reviews.ts       Review type + MOCK_REVIEWS + reviewStatusLabel / getReviewsForGame
+  supabase/        Supabase client-helpers — client.ts (browser), server.ts (SSR), middleware.ts (sessie-refresh)
+middleware.ts      ververst de Supabase-sessie per request (no-op zonder env-vars)
+supabase/
+  migrations/      SQL-migraties — 0001_initial_schema.sql (tabellen + RLS + triggers)
 designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
 
-> **Data:** alle data is placeholder. `lib/games.ts` voor games, `lib/homeFeed.ts` voor feed/user-data. Supabase/auth volgen in Fase 2.
+> **Data:** UI draait nog op placeholder-data (`lib/games.ts`, `lib/homeFeed.ts`, `lib/reviews.ts`). Vanaf Fase 2.2 wordt dit aan Supabase gekoppeld.
 >
-> **Auth:** `HomeAuthPanel` is een prototype-UI — geen echte login/registratie. Auth wordt gekoppeld in Fase 1.7 / Fase 2.
+> **Setup:** Supabase/Vercel-koppeling vereist handmatige stappen — zie [`SETUP.md`](./SETUP.md). De Supabase-code is veilig inert zonder env-vars.
 
 ## Fase-status
 
@@ -88,7 +93,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 1.5 | Game detail hero | ✅ Afgerond |
 | 1.6 | Review card | ✅ Afgerond |
 | 1.7 | Login/register layout | ✅ Afgerond |
-| 2 | Technical foundation (Supabase, auth, DB) | ⏳ Volgende stap |
+| 2.1 | Supabase-foundation + DB-schema | ✅ Code klaar — wacht op handmatige Supabase-setup (zie [`SETUP.md`](./SETUP.md)) |
+| 2.2 | Auth wiring (login/register/logout op echte auth) | ⏳ Na Supabase-setup |
 | 3–9 | Game library → public launch | 🔲 Gepland |
 
 ## Documentatie

@@ -4,6 +4,7 @@ import "./globals.css";
 import NavRail from "@/components/NavRail/NavRail";
 import StatusBar from "@/components/StatusBar/StatusBar";
 import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
+import Analytics from "@/components/Analytics/Analytics";
 
 const fredoka = Fredoka({
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default function RootLayout({
           <NavRail />
           <main className="main-content">{children}</main>
         </div>
+        <Analytics />
       </body>
     </html>
   );
