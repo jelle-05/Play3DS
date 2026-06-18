@@ -1,0 +1,43 @@
+/* ─── GameLibrary — paginated library met Load more ────────────────── */
+
+.game-library__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+}
+
+.game-library__count {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.game-library__more {
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.game-library__more:hover {
+  transform: translateY(-1px);
+  background: var(--color-surface-soft);
+}
+
+.game-library__more:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.game-library__error {
+  font-size: var(--text-sm);
+  color: var(--color-danger, #dc2626);
+}

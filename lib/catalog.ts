@@ -22,19 +22,37 @@ function rowToGame(row: any): Game {
 
 const isConfigured = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-// Volledige catalogus (alfabetisch). Valt terug op de mock-data wanneer
-// Supabase niet geconfigureerd is (bv. lokale build zonder env-vars).
-export async function getCatalogGames(): Promise<Game[]> {
-  if (!isConfigured) return MOCK_GAMES;
+export interface CatalogPage {
+  games: Game[];
+  total: number;
+}
+
+// Eén pagina van de catalogus (alfabetisch), plus het totaalaantal. De volledige
+// 3DS-catalogus telt duizenden games, dus de library laadt in batches i.p.v.
+// alles in één keer. Valt terug op de mock-data zonder env-vars.
+export async function getCatalogPage(
+  limit: number,
+  offset: number
+): Promise<CatalogPage> {
+  if (!isConfigured) {
+    return { games: MOCK_GAMES.slice(offset, offset + limit), total: MOCK_GAMES.length };
+  }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data, count, error } = await supabase
     .from("games")
-    .select("*")
-    .order("title", { ascending: true });
+    .select("*", { count: "exact" })
+    .order("title", { ascending: true })
+    .range(offset, offset + limit - 1);
 
-  if (error || !data || data.length === 0) return MOCK_GAMES;
-  return data.map(rowToGame);
+  if (error || !data) {
+    // Fallback naar mock bij een fout, maar alleen op de eerste pagina.
+    if (offset === 0) {
+      return { games: MOCK_GAMES.slice(0, limit), total: MOCK_GAMES.length };
+    }
+    return { games: [], total: 0 };
+  }
+  return { games: data.map(rowToGame), total: count ?? data.length };
 }
 
 // Zoek games op titel of alias (accent-ongevoelig, dedupe + relevantie).

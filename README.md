@@ -71,7 +71,7 @@ components/
   Analytics/       Google Analytics scaffold (alleen actief met NEXT_PUBLIC_GA_ID)
 lib/
   games.ts         Game type + MOCK_GAMES (fallback) + STATUS_GROUPS / groupGamesByStatus / gradientForSlug
-  catalog.ts       catalogus-queries op Supabase (getCatalogGames / getCatalogGameBySlug) + mock-fallback
+  catalog.ts       catalogus-queries op Supabase (getCatalogPage / getCatalogGameBySlug) + mock-fallback
   homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
   reviews.ts       Review type + MOCK_REVIEWS + reviewStatusLabel / getReviewsForGame
   supabase/        Supabase client-helpers — client.ts (browser), server.ts (SSR), middleware.ts (sessie-refresh)
