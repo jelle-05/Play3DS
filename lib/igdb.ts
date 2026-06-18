@@ -122,13 +122,17 @@ function normalizeGame(row: any): IgdbGame {
 
 // Haalt één pagina 3DS-games op (category 0 = main game). Lege array = klaar.
 export async function fetchIgdb3dsGamesPage(offset: number): Promise<IgdbGame[]> {
+  // "platforms = (37)" matcht games waarvan de platforms-array Nintendo 3DS
+  // bevat — de bewezen-betrouwbare IGDB-filter. New 3DS (137) wordt apart
+  // meegenomen via OR. Geen category-where-filter (matchte niets); we halen
+  // category wel op en filteren waar nodig in JS.
   const body = `
     fields name, slug, summary, first_release_date, category,
            genres.name, cover.image_id,
            involved_companies.company.name,
            involved_companies.developer,
            involved_companies.publisher;
-    where (platforms = (${PLATFORM_3DS}) | platforms = (${PLATFORM_NEW_3DS})) & category = 0;
+    where platforms = (${PLATFORM_3DS}) | platforms = (${PLATFORM_NEW_3DS});
     sort id asc;
     limit ${PAGE_SIZE};
     offset ${offset};
@@ -139,6 +143,76 @@ export async function fetchIgdb3dsGamesPage(offset: number): Promise<IgdbGame[]>
 }
 
 export const IGDB_PAGE_SIZE = PAGE_SIZE;
+
+/* ── Diagnostiek ───────────────────────────────────────────────────────
+   Draait een reeks minimale queries en rapporteert per stap of die slaagt
+   en hoeveel rijen terugkomen. Maakt in één klik zichtbaar wat wél/niet
+   werkt (token, platform-filter, OR-variant, time-to-beat).               */
+export interface IgdbCheck {
+  label: string;
+  ok: boolean;
+  detail: string;
+}
+
+async function check(label: string, body: string): Promise<IgdbCheck> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rows = await igdbRequest<any[]>("games", body);
+    return { label, ok: true, detail: `${rows.length} rows` };
+  } catch (e) {
+    return { label, ok: false, detail: e instanceof Error ? e.message : "error" };
+  }
+}
+
+export async function runIgdbDiagnostics(): Promise<IgdbCheck[]> {
+  const checks: IgdbCheck[] = [];
+
+  try {
+    await getAccessToken();
+    checks.push({ label: "Twitch token", ok: true, detail: "obtained" });
+  } catch (e) {
+    checks.push({
+      label: "Twitch token",
+      ok: false,
+      detail: e instanceof Error ? e.message : "failed",
+    });
+    return checks; // zonder token heeft de rest geen zin
+  }
+
+  checks.push(await check("games (no filter)", "fields name; limit 5;"));
+  checks.push(
+    await check("platforms = (37)", `fields name; where platforms = (${PLATFORM_3DS}); limit 5;`)
+  );
+  checks.push(
+    await check(
+      "platforms = (37) | (137)",
+      `fields name; where platforms = (${PLATFORM_3DS}) | platforms = (${PLATFORM_NEW_3DS}); limit 5;`
+    )
+  );
+  checks.push(
+    await check(
+      "category field",
+      `fields name,category; where platforms = (${PLATFORM_3DS}); limit 1;`
+    )
+  );
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ttb = await igdbRequest<any[]>(
+      "game_time_to_beats",
+      "fields game_id,normally,completely,count; limit 5;"
+    );
+    checks.push({ label: "game_time_to_beats", ok: true, detail: `${ttb.length} rows` });
+  } catch (e) {
+    checks.push({
+      label: "game_time_to_beats",
+      ok: false,
+      detail: e instanceof Error ? e.message : "error",
+    });
+  }
+
+  return checks;
+}
 
 /* ── Time to beat ──────────────────────────────────────────────────── */
 // game_time_to_beats: tijden in seconden (hastily/normally/completely).

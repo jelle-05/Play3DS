@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { syncIgdbPage } from "@/app/admin/igdb/actions";
+import { syncIgdbPage, diagnoseIgdb } from "@/app/admin/igdb/actions";
+import type { IgdbCheck } from "@/lib/igdb";
 
 interface Totals {
   pages: number;
@@ -19,6 +20,21 @@ export default function IgdbSync() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totals, setTotals] = useState<Totals>(ZERO);
+  const [testing, setTesting] = useState(false);
+  const [checks, setChecks] = useState<IgdbCheck[] | null>(null);
+
+  async function test() {
+    setTesting(true);
+    setChecks(null);
+    try {
+      setChecks(await diagnoseIgdb());
+    } catch (e) {
+      setChecks([
+        { label: "Test", ok: false, detail: e instanceof Error ? e.message : "error" },
+      ]);
+    }
+    setTesting(false);
+  }
 
   async function start() {
     setRunning(true);
@@ -62,14 +78,40 @@ export default function IgdbSync() {
 
   return (
     <div className="admin-igdb">
-      <button
-        type="button"
-        className="admin-btn admin-btn--primary"
-        onClick={start}
-        disabled={running}
-      >
-        {running ? "Syncing…" : "Start IGDB sync"}
-      </button>
+      <div className="admin-quick">
+        <button
+          type="button"
+          className="admin-btn admin-btn--primary"
+          onClick={start}
+          disabled={running || testing}
+        >
+          {running ? "Syncing…" : "Start IGDB sync"}
+        </button>
+        <button
+          type="button"
+          className="admin-btn"
+          onClick={test}
+          disabled={running || testing}
+        >
+          {testing ? "Testing…" : "Test connection"}
+        </button>
+      </div>
+
+      {checks && (
+        <div className="admin-igdb__checks">
+          <h3 className="admin-subsection-title">Connection test</h3>
+          <ul>
+            {checks.map((c, i) => (
+              <li key={i}>
+                <span className={c.ok ? "admin-check--ok" : "admin-check--bad"}>
+                  {c.ok ? "✓" : "✗"}
+                </span>{" "}
+                <strong>{c.label}</strong> — {c.detail}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {(running || totals.pages > 0) && (
         <div className="admin-igdb__progress">
