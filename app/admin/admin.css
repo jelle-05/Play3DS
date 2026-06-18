@@ -141,6 +141,19 @@
   flex-wrap: wrap;
 }
 
+/* ── IGDB sync ── */
+.admin-igdb__progress {
+  margin-top: var(--space-6);
+}
+
+.admin-stats--compact {
+  margin-bottom: var(--space-3);
+}
+
+.admin-stats--compact .admin-stat__num {
+  font-size: var(--text-2xl);
+}
+
 .admin-note {
   color: var(--color-text-muted);
   font-size: var(--text-base);

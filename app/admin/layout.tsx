@@ -15,6 +15,7 @@ const TABS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/games", label: "Games" },
   { href: "/admin/import", label: "Import" },
+  { href: "/admin/igdb", label: "IGDB" },
 ];
 
 export default async function AdminLayout({
