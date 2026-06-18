@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import GameSlider from "@/components/GameSlider/GameSlider";
-import GameGrid from "@/components/GameGrid/GameGrid";
-import { getCatalogGames } from "@/lib/catalog";
+import GameLibrary from "@/components/GameLibrary/GameLibrary";
+import { getCatalogPage } from "@/lib/catalog";
 import "./page.css";
 
 export const metadata: Metadata = {
   title: "Game Library",
 };
 
+const PAGE_SIZE = 48;
+
 export default async function GamesPage() {
-  const games = await getCatalogGames();
+  const { games, total } = await getCatalogPage(PAGE_SIZE, 0);
   const featured = games.slice(0, 8);
 
   return (
@@ -21,7 +23,7 @@ export default async function GamesPage() {
           <p className="games-header-sub">The Nintendo 3DS catalog</p>
         </div>
         <div className="games-stats">
-          <span className="pill pill-surface">{games.length} games</span>
+          <span className="pill pill-surface">{total} games</span>
         </div>
       </header>
 
@@ -32,9 +34,9 @@ export default async function GamesPage() {
         </section>
       )}
 
-      {/* Full library with grid toggle */}
+      {/* Full library with grid toggle + load more */}
       <section className="games-section">
-        <GameGrid games={games} title="All Games" />
+        <GameLibrary initialGames={games} total={total} pageSize={PAGE_SIZE} />
       </section>
     </div>
   );
