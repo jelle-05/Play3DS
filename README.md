@@ -9,9 +9,10 @@ Een clean, smooth en speels webplatform om je Nintendo 3DS-playthroughs bij te h
 - **Framework:** Next.js 15 (App Router, TypeScript)
 - **Styling:** Plain CSS — `app/globals.css` voor tokens, `components/[Name]/[Name].css` per component
 - **Fonts:** Fredoka (display) + Inter (body) via `next/font/google`
-- **Hosting:** Vercel
-- **Database & Auth:** Supabase (volgt in Fase 2)
-- **Animaties:** GSAP / Osmo Supply (volgen in Fase 8)
+- **Hosting:** Vercel (productie: [play3ds.vercel.app](https://play3ds.vercel.app))
+- **Database & Auth:** Supabase (Postgres + RLS + Supabase Auth) — live
+- **Externe data:** IGDB-catalogus (via Twitch-OAuth) als bron, gecachet in Supabase
+- **Animaties:** GSAP / Osmo Supply
 
 ## Scripts
 
@@ -28,62 +29,60 @@ npm start      # productie server starten na build
 
 ```
 app/
-  globals.css      design tokens, reset, shell layout, utility classes
-  layout.tsx       root layout — StatusBar + NavRail + main
-  page.tsx         homepage — twee-state via echte Supabase-sessie (niet-ingelogd / ingelogde feed)
+  globals.css            design tokens, reset, shell layout, utility classes
+  layout.tsx             root layout — StatusBar + NavRail + main
+  page.tsx               homepage — twee-state via echte Supabase-sessie
+  page.css               homepage-specifieke stijlen
   auth/
-    actions.ts     server actions: signIn / signUp / signOut
-    confirm/route.ts  e-mailbevestiging / OTP-callback
-  page.css         homepage-specifieke stijlen
-  dashboard/
-    page.tsx       dashboard — header + stats, Quick update, statusgroepen
-    page.css       dashboard-specifieke stijlen
+    actions.ts           server actions: signIn / signUp / signOut
+    confirm/route.ts     e-mailbevestiging / OTP-callback
+  dashboard/page.tsx     dashboard — stats + Quick update + statusgroepen (echte playthroughs)
   games/
-    page.tsx       game-bibliotheek met slider + grid
-    [slug]/
-      page.tsx     game detail — hero + about/details + reviews (SSG per game)
-      page.css     detailpagina-specifieke stijlen
+    page.tsx             game-bibliotheek — Featured slider + gepagineerde library
+    actions.ts           fetchCatalogPage (Load more)
+    [slug]/page.tsx      game detail — hero + about/details + playthrough-panel + reviews
+  search/page.tsx        zoekpagina (?q=, titel + aliassen, accent-ongevoelig)
+  playthroughs/
+    actions.ts           start/update/status/progress/note/delete + addPlaytime
+    [id]/page.tsx        playthrough-detail + timeline + manager
   reviews/
-    page.tsx       community review-feed (ReviewCard grid)
-    page.css       reviews-pagina-specifieke stijlen
-  login/
-    page.tsx       login-scherm (AuthForm, initialTab="login")
-  register/
-    page.tsx       register-scherm (AuthForm, initialTab="register")
+    page.tsx             community review-feed
+    actions.ts           create/update/delete review, like, add/delete comment
+    [id]/page.tsx        review-detail + comments
+  admin/                 owner-only adminomgeving (layout met role-gate)
+    page.tsx             overview · games/ · import/ · igdb/ · actions.ts
+  login/ register/       AuthForm-schermen
 components/
-  NavRail/         linker nav-rail (desktop) + bottom tab bar (mobiel)
-  StatusBar/       vaste statusbalk bovenaan
-  GameCard/        herbruikbare game-kaart (gradient cover, progress bar, pills)
-  GameGrid/        Osmo Layout Grid Flip — grid met comfort/compact toggle
-  GameSlider/      Osmo Basic GSAP Slider — horizontale draggable slider
-  ButtonIcon/      Osmo Button with Rotating Icon — CTA-knoppen
-  DepthTiles/      Osmo Depth Tiles Infinite Loop — 3D game-carousel
-  ToggleSwitch/    Osmo Toggle Switch — gesegmenteerde statusfilter
-  LibraryFilter/   game-bibliotheek met statusfilter (op /games)
-  DashboardLibrary/ dashboard-statusgroepen met ToggleSwitch-filter + empty states (GSAP Flip)
-  GameDetailHero/  full-bleed game detail hero (cover, status/playtime/progress-pills, CTA)
-  ReviewCard/      reviewkaart — score, statuslabel, spoiler-reveal, like-toggle
-  HomeFeed/        ingelogde homepage-feed (stats, playthroughs, activiteit, reviews)
-  AuthForm/        herbruikbaar login/register-formulier + auth-page layout (/login, /register)
-  ThemeToggle/     light/dark toggle in de StatusBar (data-theme + localStorage)
-  ActivityFeed/    verticale activiteitenfeed met icons en tijdstempels
-  QuickUpdate/     quick-update prototype (game kiezen, tijd optellen, mock save)
-  Analytics/       Google Analytics scaffold (alleen actief met NEXT_PUBLIC_GA_ID)
+  NavRail/ StatusBar/ ThemeToggle/ SmoothScroll/ Analytics/   shell + chrome
+  GameCard/ GameGrid/ GameSlider/ GameLibrary/ DepthTiles/     catalogus-UI
+  SearchBar/ ToggleSwitch/ ButtonIcon/ LibraryFilter/          controls
+  GameDetailHero/ StartPlaythrough/ PlaythroughPanel/          game-detail + tracking
+  PlaythroughManager/ DashboardLibrary/ QuickUpdate/           dashboard + playthrough-beheer
+  ReviewCard/ ReviewComposer/ ReviewComments/                  reviews + comments
+  AuthForm/ HomeFeed/ ActivityFeed/                            auth + home-feed
+  admin/  GameForm · ImportForm · IgdbSync                     admin-componenten
 lib/
-  games.ts         Game type + MOCK_GAMES (fallback) + STATUS_GROUPS / groupGamesByStatus / gradientForSlug
-  catalog.ts       catalogus-queries op Supabase (getCatalogPage / getCatalogGameBySlug) + mock-fallback
-  homeFeed.ts      MockUser, HomeStats, ActivityItem, ReviewPreview + mock-data
-  reviews.ts       Review type + MOCK_REVIEWS + reviewStatusLabel / getReviewsForGame
-  supabase/        Supabase client-helpers — client.ts (browser), server.ts (SSR), middleware.ts (sessie-refresh)
-middleware.ts      ververst de Supabase-sessie per request (no-op zonder env-vars)
+  games.ts           Game type + MOCK_GAMES (fallback) + STATUS_GROUPS / gradientForSlug
+  catalog.ts         catalogus-queries (getCatalogPage / getCatalogGameBySlug) + mock-fallback
+  auth.ts            getSessionUser() — ingelogde gebruiker + profiel/rol
+  admin.ts           admin-queries (games, aliassen)
+  csv.ts             CSV-parser + slugify (admin-import)
+  igdb.ts            IGDB-client (Twitch-OAuth, 3DS-games + time-to-beat) + diagnostiek
+  playthrough-types.ts  client-safe types/labels/progressie-helpers
+  playthroughs.ts    server-queries voor playthroughs
+  reviews.ts         Review/ReviewComment types + helpers + MOCK_REVIEWS (fallback)
+  reviews-db.ts      reviews/likes/comments uit Supabase (mock-fallback)
+  homeFeed.ts        mock-data voor de ingelogde home-feed
+  supabase/          client.ts (browser) · server.ts (SSR) · middleware.ts (sessie-refresh)
+middleware.ts        ververst de Supabase-sessie per request (no-op zonder env-vars)
 supabase/
-  migrations/      SQL-migraties — 0001_initial_schema.sql (tabellen + RLS + triggers)
-designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
+  migrations/        0001_initial_schema · 0002_security_hardening · 0003_search_games
+designs/             visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
 
-> **Data:** UI draait nog op placeholder-data (`lib/games.ts`, `lib/homeFeed.ts`, `lib/reviews.ts`). Vanaf Fase 2.2 wordt dit aan Supabase gekoppeld.
+> **Data:** catalogus, playthroughs en reviews/comments/likes draaien op **Supabase**. Zonder env-vars vallen de meeste queries veilig terug op mock-data (`lib/games.ts`, `lib/reviews.ts`, `lib/homeFeed.ts`) zodat de app blijft renderen.
 >
-> **Setup:** Supabase/Vercel-koppeling vereist handmatige stappen — zie [`SETUP.md`](./SETUP.md). De Supabase-code is veilig inert zonder env-vars. Optioneel kan Claude Code via een lokale, gitignored `.mcp.json` (Supabase MCP-server) migraties draaien — zie `SETUP.md` §7.
+> **Setup:** Supabase/Vercel/IGDB-koppeling vereist handmatige stappen — zie [`SETUP.md`](./SETUP.md). Optioneel kan Claude Code via een lokale, gitignored `.mcp.json` (Supabase MCP-server) migraties draaien — zie `SETUP.md` §7.
 
 ## Fase-status
 
@@ -115,12 +114,13 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 
 ## Documentatie
 
-- **[`fases.md`](./fases.md)** — projectplan, MVP-scope en alle fases.
+- **[`fases.md`](./fases.md)** — projectplan, MVP-scope en alle fases (met per-fase status).
+- **[`SETUP.md`](./SETUP.md)** — handmatige setup: Supabase, auth, env-vars, MCP, IGDB.
 - **[`CLAUDE.md`](./CLAUDE.md)** — werkafspraken en stack voor de ontwikkeling.
 - **[`designs/`](./designs)** — visuele referenties (iiSU/Shopii-stijl) voor de design language.
 
 ## Werkwijze
 
-Testen en valideren gebeurt **via Vercel**, niet lokaal. Elke wijziging wordt gecontroleerd op een Vercel preview deployment (desktop én mobiel) en pas daarna naar productie. Zie `fases.md` §0 voor de volledige werkwijze.
+Testen en valideren gebeurt **via Vercel**, niet lokaal. Elke wijziging gaat via een feature-branch → PR → merge naar `main`, en wordt gecontroleerd op de Vercel-deployment (desktop én mobiel, light/dark). Zie `fases.md` §0 voor de volledige werkwijze.
 
-> **Vercel-koppeling:** nog niet gelegd. Eenmalig handmatig in te stellen via Vercel dashboard → repo koppelen → elke push levert daarna automatisch een preview-URL op.
+> **Vercel-koppeling:** actief. Elke push naar `main` levert automatisch een productie-deploy op ([play3ds.vercel.app](https://play3ds.vercel.app)); feature-branches krijgen een preview-URL.
