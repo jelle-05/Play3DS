@@ -49,6 +49,8 @@ function rowToPlaythrough(row: any): Playthrough {
           title: g.title,
           slug: g.slug,
           platform: g.platform ?? "Nintendo 3DS",
+          genre: g.genre ?? null,
+          releaseYear: g.release_year ?? null,
           coverUrl: g.cover_url ?? null,
           gradientClass: gradientForSlug(g.slug ?? g.id),
         }
@@ -57,7 +59,7 @@ function rowToPlaythrough(row: any): Playthrough {
 }
 
 const PLAYTHROUGH_SELECT =
-  "id, game_id, run_name, status, goal_type, played_minutes, estimated_progress_percent, manual_progress_percent, progress_source, progress_note, started_at, completed_at, games ( id, title, slug, platform, cover_url )";
+  "id, game_id, run_name, status, goal_type, played_minutes, estimated_progress_percent, manual_progress_percent, progress_source, progress_note, started_at, completed_at, games ( id, title, slug, platform, genre, release_year, cover_url )";
 
 // Playthroughs van de huidige gebruiker voor één game (detailpagina).
 export async function getPlaythroughsForGame(
@@ -75,6 +77,25 @@ export async function getPlaythroughsForGame(
     .eq("user_id", user.id)
     .eq("game_id", gameId)
     .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data.map(rowToPlaythrough);
+}
+
+// Alle playthroughs van de huidige gebruiker (dashboard). Lege lijst als niet
+// ingelogd. Recentst bijgewerkt eerst.
+export async function getUserPlaythroughs(): Promise<Playthrough[]> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("playthroughs")
+    .select(PLAYTHROUGH_SELECT)
+    .eq("user_id", user.id)
+    .order("updated_at", { ascending: false });
 
   if (error || !data) return [];
   return data.map(rowToPlaythrough);

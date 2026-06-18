@@ -157,7 +157,7 @@ export default function DashboardLibrary({ games }: DashboardLibraryProps) {
                       className={`dashboard-card${hidden}`}
                       data-flip-id={game.id}
                     >
-                      <GameCard game={game} href={`/games/${game.id}`} />
+                      <GameCard game={game} href={`/games/${game.slug ?? game.id}`} />
                     </div>
                   ))}
                 </div>

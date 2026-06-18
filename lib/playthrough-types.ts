@@ -2,7 +2,7 @@
 // (geen next/headers / Supabase), zodat zowel client- als server-componenten
 // dit veilig kunnen importeren. De server-queries staan in lib/playthroughs.ts.
 
-import type { GameStatus } from "@/lib/games";
+import type { Game, GameStatus } from "@/lib/games";
 
 export type PlaythroughStatus =
   | "want_to_play"
@@ -52,6 +52,8 @@ export interface PlaythroughGame {
   title: string;
   slug: string;
   platform: string;
+  genre: string | null;
+  releaseYear: number | null;
   coverUrl: string | null;
   gradientClass: string;
 }
@@ -119,4 +121,23 @@ export function formatMinutes(total: number): string {
   if (h === 0) return `${m}m`;
   if (m === 0) return `${h}h`;
   return `${h}h ${m}m`;
+}
+
+// Playthrough → het Game-vorm dat GameCard/dashboard verwacht. `id` = de
+// playthrough-id (uniek per run, ook bij meerdere playthroughs van één game).
+export function playthroughToCard(p: Playthrough): Game {
+  return {
+    id: p.id,
+    slug: p.game?.slug,
+    title: p.game?.title ?? "Unknown game",
+    platform: p.game?.platform ?? "Nintendo 3DS",
+    genre: p.game?.genre ?? "",
+    releaseYear: p.game?.releaseYear ?? 0,
+    gradientClass: p.game?.gradientClass ?? "game-card-cover--purple",
+    coverUrl: p.game?.coverUrl ?? null,
+    status: DB_TO_UI_STATUS[p.status],
+    statusLabel: STATUS_LABELS[p.status],
+    playtime: p.playedMinutes > 0 ? formatMinutes(p.playedMinutes) : null,
+    progressPercent: effectiveProgress(p) ?? 0,
+  };
 }
