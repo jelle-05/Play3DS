@@ -78,6 +78,28 @@ export async function getRecentReviews(limit = 30): Promise<Review[]> {
   return data.map((r) => rowToReview(r, usernames, user?.id));
 }
 
+// De review van de huidige gebruiker voor één game (game-uuid), of null.
+export async function getMyReviewForGame(gameId: string): Promise<Review | null> {
+  if (!isConfigured) return null;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(REVIEW_SELECT)
+    .eq("game_id", gameId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const usernames = await usernamesFor(supabase, [data.user_id]);
+  return rowToReview(data, usernames, user.id);
+}
+
 // Reviews voor één game. `gameKey` = game-uuid (DB) of slug (mock-fallback).
 export async function getReviewsForGameDb(gameKey: string): Promise<Review[]> {
   if (!isConfigured) {

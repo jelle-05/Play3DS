@@ -244,3 +244,20 @@ button.review-card__action:active {
     padding: var(--space-4);
   }
 }
+
+.review-card__delete {
+  color: var(--color-danger, #dc2626);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.review-card__delete:hover {
+  text-decoration: underline;
+}
+
+.review-card__delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
