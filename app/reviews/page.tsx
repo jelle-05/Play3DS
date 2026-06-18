@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
-import { MOCK_REVIEWS } from "@/lib/reviews";
+import { getRecentReviews } from "@/lib/reviews-db";
 import "./page.css";
 
 export const metadata: Metadata = {
   title: "Reviews",
 };
 
-export default function ReviewsPage() {
-  const reviews = MOCK_REVIEWS;
+export const dynamic = "force-dynamic";
+
+export default async function ReviewsPage() {
+  const reviews = await getRecentReviews();
 
   return (
     <div className="reviews-page">
@@ -22,11 +24,17 @@ export default function ReviewsPage() {
         <span className="pill pill-surface">{reviews.length} reviews</span>
       </header>
 
-      <div className="reviews-grid">
-        {reviews.map((review) => (
-          <ReviewCard key={review.id} review={review} />
-        ))}
-      </div>
+      {reviews.length === 0 ? (
+        <p className="reviews-empty">
+          No reviews yet. Be the first — open a game and share your thoughts.
+        </p>
+      ) : (
+        <div className="reviews-grid">
+          {reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

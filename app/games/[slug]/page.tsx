@@ -4,7 +4,7 @@ import GameDetailHero from "@/components/GameDetailHero/GameDetailHero";
 import PlaythroughPanel from "@/components/PlaythroughPanel/PlaythroughPanel";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
 import { getCatalogGameBySlug } from "@/lib/catalog";
-import { getReviewsForGame } from "@/lib/reviews";
+import { getReviewsForGameDb } from "@/lib/reviews-db";
 import { getSessionUser } from "@/lib/auth";
 import {
   getTimeEstimateForGame,
@@ -37,14 +37,13 @@ export default async function GameDetailPage({ params, searchParams }: PageProps
 
   if (!game) notFound();
 
-  // Reviews matchen (voorlopig mock) op slug.
-  const reviews = getReviewsForGame(game.slug ?? game.id);
-
-  // Playthrough-context: sessie, tijdschatting en bestaande playthroughs.
-  const [session, estimate, playthroughs] = await Promise.all([
+  // Playthrough-context + reviews uit de DB (op game-uuid; mock-fallback op slug).
+  const reviewKey = process.env.NEXT_PUBLIC_SUPABASE_URL ? game.id : game.slug ?? game.id;
+  const [session, estimate, playthroughs, reviews] = await Promise.all([
     getSessionUser(),
     getTimeEstimateForGame(game.id),
     getPlaythroughsForGame(game.id),
+    getReviewsForGameDb(reviewKey),
   ]);
 
   const averagePlaytime = estimate?.mainMinutes

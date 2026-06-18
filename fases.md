@@ -1391,6 +1391,12 @@ Output:
 - Comments werken zonder nested replies
 - Reviews zichtbaar op gamepagina’s en profielen
 
+> **Opdeling:**
+> - **5.1 — reviews uit de DB (read) (afgerond):** `lib/reviews-db.ts` (`getRecentReviews`, `getReviewsForGameDb`) leest publieke reviews uit Supabase; usernames apart opgehaald uit `profiles` (reviews.user_id → auth.users, dus geen PostgREST-embed). `/reviews` en de game-detailpagina tonen nu DB-reviews via `ReviewCard` (relatieve tijd, mock-fallback zonder env). `Review`-interface versoepeld (optionele playtime/goal, `isOwner`/`likedByMe`); helpers `initialsFrom` + `formatRelativeTime`. 2 demo-reviews geseed.
+> - **5.2 — review schrijven/bewerken/verwijderen (volgende).**
+> - **5.3 — likes.**
+> - **5.4 — comments + `/reviews/[id]`.**
+
 ---
 
 ## Fase 6 — Profiles, privacy & activity feed

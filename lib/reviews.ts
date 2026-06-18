@@ -18,12 +18,44 @@ export interface Review {
   status: ReviewStatus;
   title: string;
   body: string;
-  playtimeAtReview: string;
-  goalType: string;
+  playtimeAtReview?: string | null;
+  goalType?: string | null;
   hasSpoilers: boolean;
   likes: number;
   comments: number;
   relativeTime: string;
+  // Alleen aanwezig bij DB-reviews — bepaalt of de huidige gebruiker mag
+  // bewerken/verwijderen of de review al heeft geliket (5.2/5.3).
+  isOwner?: boolean;
+  likedByMe?: boolean;
+}
+
+// Naam → initialen (max 2 letters).
+export function initialsFrom(name: string): string {
+  const parts = name.replace(/[^a-zA-Z0-9 ]/g, "").trim().split(/\s+/);
+  if (parts.length === 0 || parts[0] === "") return "P3";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
+// ISO-datum → korte relatieve tijd ("3 days ago").
+export function formatRelativeTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  const now = Date.now();
+  const secs = Math.max(0, Math.round((now - then) / 1000));
+  const mins = Math.round(secs / 60);
+  const hours = Math.round(mins / 60);
+  const days = Math.round(hours / 24);
+  if (secs < 60) return "just now";
+  if (mins < 60) return `${mins} minute${mins === 1 ? "" : "s"} ago`;
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+  const weeks = Math.round(days / 7);
+  if (days < 30) return `${weeks} week${weeks === 1 ? "" : "s"} ago`;
+  const months = Math.round(days / 30);
+  if (days < 365) return `${months} month${months === 1 ? "" : "s"} ago`;
+  const years = Math.round(days / 365);
+  return `${years} year${years === 1 ? "" : "s"} ago`;
 }
 
 // Auto-generated label from status (e.g. "Completed review").
