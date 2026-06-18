@@ -1327,8 +1327,8 @@ Output:
 > **Status (in uitvoering):**
 > - **3.1 — library uit DB (afgerond):** 10 games geseed in de `games`-tabel (via MCP); `lib/catalog.ts` met `getCatalogGames` / `getCatalogGameBySlug` (server-queries, mock-fallback zonder env); `/games` en `/games/[slug]` lezen nu uit Supabase (detail = dynamisch i.p.v. SSG). `Game`-type gesplitst in catalogus-metadata vs. optionele playthrough-velden; `gradientForSlug` voor cover-kleur zolang er geen echte cover-URL is. Dashboard/home/reviews draaien nog op mock t/m Fase 4/5.
 > - **3.2 — search (afgerond):** `/search`-route met een gedebouncede `SearchBar` (query in de URL `?q=`, server-side resultaten in de bestaande `GameGrid`). Postgres-functie `search_games` (migratie 0003) zoekt op titel én aliassen, **accent-ongevoelig** ("pokemon" vindt "Pokémon") via de `unaccent`-extensie, met dedupe en relevantie-sortering (prefix-match eerst). `searchCatalogGames` in `lib/catalog.ts` roept de RPC aan, met mock-fallback zonder env.
-> - **3.3 — admin games + CSV-import (volgende).**
-> - **3.4 — volledige catalogus via IGDB.**
+> - **3.3 — admin games + CSV-import (afgerond):** owner-only adminomgeving onder `/admin` (role-gate in `app/admin/layout.tsx`, `force-dynamic`; Admin-link in de NavRail enkel voor admins). Overzicht met metadata-status-tellingen, games-tabel, `/admin/games/new` + `/admin/games/[id]` (gedeelde `GameForm`) met aliasbeheer en verwijderen. `/admin/import`: CSV plakken/uploaden → upsert op slug, aliases (`|`-gescheiden) vervangen, per-rij foutrapportage. Bouwstenen: `lib/csv.ts` (parser + `slugify`), `lib/admin.ts` (queries), `app/admin/actions.ts` (server actions, `requireAdmin`). Schrijven loopt via de RLS-policies `*_admin_write` (`is_admin()`), geen service-role nodig.
+> - **3.4 — volledige catalogus via IGDB (volgende).**
 
 ---
 
