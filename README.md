@@ -105,8 +105,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 3.4 | Volledige catalogus (IGDB-sync via `/admin/igdb`) | ✅ Afgerond |
 | 4.1 | Playthrough starten (datalaag + start-flow op detailpagina) | ✅ Afgerond |
 | 4.2 | Dashboard op echte data | ✅ Afgerond |
-| 4.3 | Quick update (echte opslag) | ⏳ Volgende stap |
-| 4.4 | Playthrough-detail + timeline | 🔲 Gepland |
+| 4.3 | Quick update (echte opslag) | ✅ Afgerond |
+| 4.4 | Playthrough-detail + timeline | ⏳ Volgende stap |
 | 5–9 | Reviews → public launch | 🔲 Gepland |
 
 ## Documentatie
