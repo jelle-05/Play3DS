@@ -1361,8 +1361,8 @@ Output:
 
 > **Opdeling (volgens de gebruikersreis):**
 > - **4.1 — datalaag + "Start playthrough" (afgerond):** `lib/playthrough-types.ts` (client-safe types/labels/progressie-helpers: `averageMinutesForGoal`, `computeProgress`, `effectiveProgress`, `formatMinutes`) + `lib/playthroughs.ts` (server-queries `getTimeEstimateForGame`, `getPlaythroughsForGame`). Start-flow op de game-detailpagina via `PlaythroughPanel` + client-`StartPlaythrough` (doel kiezen, optionele huidige speeltijd, run-naam) → server-action `startPlaythrough` (berekent estimated progress uit IGDB-speeltijd + doeltype, schrijft eerste timeline-event, redirect naar dashboard). Detailpagina toont nu echte gemiddelde speeltijd en bestaande playthroughs; hero-CTA linkt naar de track-sectie.
-> - **4.2 — dashboard op echte data (volgende).**
-> - **4.3 — quick update (echte opslag).**
+> - **4.2 — dashboard op echte data (afgerond):** `/dashboard` leest de playthroughs van de ingelogde gebruiker (`getUserPlaythroughs`, `force-dynamic`) i.p.v. mock; `playthroughToCard` mapt naar het GameCard-formaat (status, speeltijd, voortgang). Stats (playing/completed/tracked/want), status-groepen via `DashboardLibrary`, en nette lege/uitgelogde staten. `PlaythroughGame` uitgebreid met genre/releaseYear.
+> - **4.3 — quick update (echte opslag) (volgende).**
 > - **4.4 — playthrough-detail + timeline.**
 
 ---
