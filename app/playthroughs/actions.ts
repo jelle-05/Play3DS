@@ -78,3 +78,53 @@ export async function startPlaythrough(formData: FormData) {
   if (slug) revalidatePath(`/games/${slug}`);
   redirect("/dashboard");
 }
+
+// Speeltijd toevoegen aan een playthrough (Quick update). Herberekent de
+// geschatte voortgang en schrijft een timeline-event. Geen redirect — de
+// client ververst zelf.
+export async function addPlaytime(playthroughId: string, minutesToAdd: number) {
+  if (!playthroughId || !Number.isFinite(minutesToAdd) || minutesToAdd <= 0) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: pt } = await supabase
+    .from("playthroughs")
+    .select("id, game_id, status, goal_type, played_minutes")
+    .eq("id", playthroughId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!pt) return;
+
+  const newPlayed = (pt.played_minutes ?? 0) + minutesToAdd;
+  const est = await getTimeEstimateForGame(pt.game_id);
+  const avg = averageMinutesForGoal(est, pt.goal_type as GoalType | null);
+  const estimated = computeProgress(newPlayed, avg);
+  // Tijd loggen op een "want to play" run betekent dat je begonnen bent.
+  const newStatus = pt.status === "want_to_play" ? "playing" : pt.status;
+
+  const update: Record<string, unknown> = {
+    played_minutes: newPlayed,
+    estimated_progress_percent: estimated,
+    status: newStatus,
+    updated_at: new Date().toISOString(),
+  };
+  if (pt.status === "want_to_play") update.started_at = new Date().toISOString();
+
+  await supabase.from("playthroughs").update(update).eq("id", playthroughId);
+
+  await supabase.from("playthrough_updates").insert({
+    playthrough_id: playthroughId,
+    user_id: user.id,
+    previous_status: pt.status,
+    new_status: newStatus,
+    played_minutes: newPlayed,
+    minutes_added: minutesToAdd,
+    estimated_progress_percent: estimated,
+  });
+
+  revalidatePath("/dashboard");
+}

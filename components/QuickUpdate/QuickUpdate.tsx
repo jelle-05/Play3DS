@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Game } from "@/lib/games";
+import { addPlaytime } from "@/app/playthroughs/actions";
 import "./QuickUpdate.css";
 
 const TIME_OPTIONS = [
@@ -16,9 +18,11 @@ interface QuickUpdateProps {
 }
 
 export default function QuickUpdate({ games }: QuickUpdateProps) {
+  const router = useRouter();
   const [selectedId, setSelectedId] = useState(games[0]?.id ?? "");
   const [addedMinutes, setAddedMinutes] = useState(0);
   const [saved, setSaved] = useState(false);
+  const [pending, startTransition] = useTransition();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -34,9 +38,15 @@ export default function QuickUpdate({ games }: QuickUpdateProps) {
   }
 
   function handleSave() {
-    setSaved(true);
-    setAddedMinutes(0);
-    timerRef.current = setTimeout(() => setSaved(false), 2000);
+    if (addedMinutes <= 0 || !selectedId) return;
+    const minutes = addedMinutes;
+    startTransition(async () => {
+      await addPlaytime(selectedId, minutes);
+      router.refresh(); // ververst de dashboard-data (nieuwe speeltijd/voortgang)
+      setAddedMinutes(0);
+      setSaved(true);
+      timerRef.current = setTimeout(() => setSaved(false), 2000);
+    });
   }
 
   if (games.length === 0) {
@@ -66,8 +76,6 @@ export default function QuickUpdate({ games }: QuickUpdateProps) {
     <section className="quick-update feed-section">
       <div className="feed-section-header">
         <h2 className="feed-section-title">Quick Update</h2>
-        {/* Prototype notice — real save flow comes in Phase 1.4 */}
-        <span className="quick-update__badge">Demo</span>
       </div>
 
       <div className="quick-update__panel">
@@ -120,9 +128,9 @@ export default function QuickUpdate({ games }: QuickUpdateProps) {
           type="button"
           className={`quick-update__save${saved ? " quick-update__save--saved" : ""}`}
           onClick={handleSave}
-          disabled={addedMinutes === 0 && !saved}
+          disabled={pending || (addedMinutes === 0 && !saved)}
         >
-          {saved ? "Saved!" : "Save update"}
+          {pending ? "Saving…" : saved ? "Saved!" : "Save update"}
         </button>
       </div>
     </section>
