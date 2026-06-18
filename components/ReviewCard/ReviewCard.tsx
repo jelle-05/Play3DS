@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { reviewStatusLabel, type Review } from "@/lib/reviews";
-import { deleteReview } from "@/app/reviews/actions";
+import { deleteReview, toggleReviewLike } from "@/app/reviews/actions";
 import "./ReviewCard.css";
 
 interface ReviewCardProps {
@@ -24,11 +24,21 @@ function scoreTier(rating: number): "high" | "mid" | "low" {
 export default function ReviewCard({ review, showGame = true, canDelete = false }: ReviewCardProps) {
   const router = useRouter();
   const [revealed, setRevealed] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(review.likedByMe ?? false);
+  const [likeCount, setLikeCount] = useState(review.likes);
   const [pending, startTransition] = useTransition();
 
-  const likeCount = review.likes + (liked ? 1 : 0);
   const spoilerHidden = review.hasSpoilers && !revealed;
+
+  function handleLike() {
+    // Optimistisch togglen; de server hertelt en router.refresh haalt de waarheid.
+    setLiked((v) => !v);
+    setLikeCount((c) => c + (liked ? -1 : 1));
+    startTransition(async () => {
+      await toggleReviewLike(review.id);
+      router.refresh();
+    });
+  }
 
   function handleDelete() {
     if (!confirm("Delete this review?")) return;
@@ -117,7 +127,7 @@ export default function ReviewCard({ review, showGame = true, canDelete = false 
             }`}
             aria-pressed={liked}
             aria-label={liked ? "Unlike review" : "Like review"}
-            onClick={() => setLiked((v) => !v)}
+            onClick={handleLike}
           >
             <span aria-hidden="true">{liked ? "♥" : "♡"}</span> {likeCount}
           </button>

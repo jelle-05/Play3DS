@@ -1394,8 +1394,8 @@ Output:
 > **Opdeling:**
 > - **5.1 — reviews uit de DB (read) (afgerond):** `lib/reviews-db.ts` (`getRecentReviews`, `getReviewsForGameDb`) leest publieke reviews uit Supabase; usernames apart opgehaald uit `profiles` (reviews.user_id → auth.users, dus geen PostgREST-embed). `/reviews` en de game-detailpagina tonen nu DB-reviews via `ReviewCard` (relatieve tijd, mock-fallback zonder env). `Review`-interface versoepeld (optionele playtime/goal, `isOwner`/`likedByMe`); helpers `initialsFrom` + `formatRelativeTime`. 2 demo-reviews geseed.
 > - **5.2 — review schrijven/bewerken/verwijderen (afgerond):** server-actions `createReview`/`updateReview`/`deleteReview` (`app/reviews/actions.ts`); `ReviewComposer` (client) op de game-detailpagina toont je eigen review met bewerken/verwijderen óf een schrijfformulier (score 1–10, status, titel, body, spoiler-vlag), koppelt automatisch je recentste playthrough. `getMyReviewForGame` haalt de eigen review op. `ReviewCard` kreeg een optionele delete-knop (eigenaar/admin) op `/reviews` en de game-detailpagina. Verwijderen via RLS (`reviews_modify_own` + `reviews_admin_delete`).
-> - **5.3 — likes (volgende).**
-> - **5.4 — comments + `/reviews/[id]`.**
+> - **5.3 — likes (afgerond):** server-action `toggleReviewLike` (insert/delete in `review_likes`). De like-telling wordt **bij het lezen** berekend (`likeInfoFor` — counts + eigen-like in één query) i.p.v. een `likes_count`-kolom bij te houden, omdat RLS niet-eigenaars geen `reviews`-update toestaat. `ReviewCard` liket optimistisch + `router.refresh()`; `likedByMe` initieert de hartstaat.
+> - **5.4 — comments + `/reviews/[id]` (volgende).**
 
 ---
 
