@@ -88,8 +88,12 @@ export default function ReviewCard({ review, showGame = true }: ReviewCardProps)
       {/* Footer: meta pills + actions */}
       <footer className="review-card__footer">
         <div className="review-card__meta">
-          <span className="pill pill-surface">▶ {review.playtimeAtReview}</span>
-          <span className="pill pill-surface">{review.goalType}</span>
+          {review.playtimeAtReview && (
+            <span className="pill pill-surface">▶ {review.playtimeAtReview}</span>
+          )}
+          {review.goalType && (
+            <span className="pill pill-surface">{review.goalType}</span>
+          )}
         </div>
         <div className="review-card__actions">
           <button

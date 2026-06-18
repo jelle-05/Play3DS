@@ -107,7 +107,11 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 4.2 | Dashboard op echte data | ✅ Afgerond |
 | 4.3 | Quick update (echte opslag) | ✅ Afgerond |
 | 4.4 | Playthrough-detail + timeline (`/playthroughs/[id]`) | ✅ Afgerond |
-| 5–9 | Reviews → public launch | 🔲 Gepland |
+| 5.1 | Reviews uit de database (read) | ✅ Afgerond |
+| 5.2 | Review schrijven/bewerken/verwijderen | ⏳ Volgende stap |
+| 5.3 | Review likes | 🔲 Gepland |
+| 5.4 | Comments + `/reviews/[id]` | 🔲 Gepland |
+| 6–9 | Profielen → public launch | 🔲 Gepland |
 
 ## Documentatie
 
