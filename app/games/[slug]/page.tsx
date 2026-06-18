@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import GameDetailHero from "@/components/GameDetailHero/GameDetailHero";
+import PlaythroughPanel from "@/components/PlaythroughPanel/PlaythroughPanel";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
 import { getCatalogGameBySlug } from "@/lib/catalog";
 import { getReviewsForGame } from "@/lib/reviews";
+import { getSessionUser } from "@/lib/auth";
+import {
+  getTimeEstimateForGame,
+  getPlaythroughsForGame,
+  formatMinutes,
+} from "@/lib/playthroughs";
 import "./page.css";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({
@@ -22,8 +30,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function GameDetailPage({ params }: PageProps) {
+export default async function GameDetailPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const { error } = await searchParams;
   const game = await getCatalogGameBySlug(slug);
 
   if (!game) notFound();
@@ -31,18 +40,39 @@ export default async function GameDetailPage({ params }: PageProps) {
   // Reviews matchen (voorlopig mock) op slug.
   const reviews = getReviewsForGame(game.slug ?? game.id);
 
+  // Playthrough-context: sessie, tijdschatting en bestaande playthroughs.
+  const [session, estimate, playthroughs] = await Promise.all([
+    getSessionUser(),
+    getTimeEstimateForGame(game.id),
+    getPlaythroughsForGame(game.id),
+  ]);
+
+  const averagePlaytime = estimate?.mainMinutes
+    ? `~${formatMinutes(estimate.mainMinutes)} (main story)`
+    : game.averagePlaytime ?? null;
+
   const details: { label: string; value: string }[] = [
     { label: "Developer", value: game.developer ?? "Unknown" },
     { label: "Publisher", value: game.publisher ?? "Unknown" },
     { label: "Genre", value: game.genre },
     { label: "Release year", value: String(game.releaseYear) },
     { label: "Platform", value: game.platform },
-    { label: "Average playtime", value: game.averagePlaytime ?? "Unknown" },
+    { label: "Average playtime", value: averagePlaytime ?? "Unknown" },
   ];
 
   return (
     <div className="game-detail-page">
       <GameDetailHero game={game} />
+
+      {error && <p className="game-detail-error">{error}</p>}
+
+      <PlaythroughPanel
+        gameId={game.id}
+        slug={game.slug ?? slug}
+        isLoggedIn={!!session}
+        estimate={estimate}
+        playthroughs={playthroughs}
+      />
 
       <div className="game-detail-body">
         {/* About */}
@@ -65,7 +95,7 @@ export default async function GameDetailPage({ params }: PageProps) {
               </div>
             ))}
           </dl>
-          {!game.averagePlaytime && (
+          {!averagePlaytime && (
             <p className="game-detail-note">
               Average playtime unknown. You can still track your own playtime and
               set progress manually.
