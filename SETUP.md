@@ -1,8 +1,8 @@
-# Play3DS — Setup (Fase 2)
+# Play3DS — Setup
 
-Deze handleiding beschrijft de **handmatige stappen** die nodig zijn om Supabase
-en de environment variables te koppelen. Claude Code kan dit niet voor je doen —
-het zijn acties in de Supabase- en Vercel-dashboards.
+Deze handleiding beschrijft de **handmatige stappen** die nodig zijn om Supabase,
+de environment variables en (optioneel) IGDB te koppelen. Claude Code kan dit niet
+voor je doen — het zijn acties in de Supabase-, Vercel- en Twitch-dashboards.
 
 > Geen secrets in de repo. Alle keys horen in Vercel/Supabase project settings.
 
@@ -16,8 +16,14 @@ het zijn acties in de Supabase- en Vercel-dashboards.
 ## 2. Database-schema laden
 
 1. Open in Supabase **SQL Editor** → **New query**.
-2. Plak de volledige inhoud van [`supabase/migrations/0001_initial_schema.sql`](./supabase/migrations/0001_initial_schema.sql).
-3. Klik **Run**. Dit maakt alle tabellen, triggers en RLS-policies aan.
+2. Draai de migraties uit [`supabase/migrations/`](./supabase/migrations) op volgorde:
+   - `0001_initial_schema.sql` — tabellen, triggers en RLS-policies
+   - `0002_security_hardening.sql` — `search_path`/grants-hardening
+   - `0003_search_games.sql` — `unaccent`-extensie + `search_games`-functie
+3. Klik per query **Run**.
+
+> Heeft Claude Code de Supabase MCP gekoppeld (§7), dan zijn deze migraties al
+> via `apply_migration` toegepast en kun je deze stap overslaan.
 
 ## 3. Auth configureren
 
@@ -35,7 +41,9 @@ Supabase → **Project Settings → API**:
 
 - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
 - **anon public** key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- **service_role** key → `SUPABASE_SERVICE_ROLE_KEY` (geheim, alleen server)
+
+> De app gebruikt **geen** service-role key — alle toegang loopt via de
+> ingelogde gebruiker + RLS-policies (admin-acties via `is_admin()`).
 
 ## 5. Environment variables in Vercel zetten
 
@@ -46,17 +54,16 @@ Vercel → je project → **Settings → Environment Variables**. Voeg toe voor
 |------|--------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Project URL uit stap 4 |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon public key |
-| `SUPABASE_SERVICE_ROLE_KEY` | service_role key |
 | `NEXT_PUBLIC_GA_ID` | (optioneel) Google Analytics measurement id |
+| `IGDB_CLIENT_ID` / `IGDB_CLIENT_SECRET` | (optioneel) IGDB-catalogus — zie §8 |
 
 Daarna een nieuwe deploy triggeren (of opnieuw pushen) zodat de vars actief worden.
 
 ## 6. Klaar
 
-Zodra deze stappen gedaan zijn, kan Claude Code verder met **Fase 2.2 — auth
-wiring** (`/login`, `/register`, logout op echte Supabase Auth). Tot die tijd
-blijft de site werken met de prototype-UI; de Supabase-code is veilig inert
-zonder env-vars.
+Zodra deze stappen gedaan zijn, draait de app op echte data: auth, de IGDB-
+catalogus, playthrough-tracking en reviews/comments/likes. Zonder env-vars
+blijft de site renderen op mock-data (de Supabase-code is veilig inert).
 
 > `.env.example` bevat de namen van alle variabelen. Lokaal testen (optioneel,
 > alleen Claude Code) kan via een `.env.local` met dezelfde namen.

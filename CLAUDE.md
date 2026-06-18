@@ -30,7 +30,7 @@ Werkafspraken en context voor Claude Code in dit project. Het volledige projectp
 
 - Wordt **direct in Next.js** gebouwd en op **Vercel** gedeployd (geen losse HTML/CSS-prototypes).
 - Wordt **in kleine stukjes** opgeleverd (sub-fases 1.1–1.7, zie `fases.md` §17); elk stukje is los te bekijken op een Vercel preview-URL. Pas door naar het volgende na akkoord.
-- Vercel-koppeling is nog niet gelegd (komt nog); echte Osmo-blokken volgen later → tot dan placeholders.
+- Vercel-koppeling is actief: elke push naar `main` deployt naar productie ([play3ds.vercel.app](https://play3ds.vercel.app)), feature-branches krijgen een preview-URL.
 
 ## Osmo Supply-blokken — altijd eerst raadplegen
 

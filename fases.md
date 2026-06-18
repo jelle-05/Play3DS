@@ -1231,7 +1231,7 @@ Doel: de feel van de website testen voordat alle backend gebouwd wordt.
 
 ### Voorwaarden
 
-- **Vercel-koppeling is nog niet gelegd** (komt nog). Zodra het repo aan een Vercel-project hangt, levert elke push een preview-URL op.
+- **Vercel-koppeling is actief** — elke push naar `main` deployt naar productie ([play3ds.vercel.app](https://play3ds.vercel.app)); feature-branches krijgen een preview-URL.
 - Een **minimale Next.js + Vercel-setup** is de eerste praktische stap van Fase 1 (overlapt met Fase 2; alleen het strikt noodzakelijke om te kunnen deployen).
 - Echte Osmo-blokken volgen later → tot dan placeholders (zie §10).
 
