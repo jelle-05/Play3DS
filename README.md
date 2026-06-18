@@ -100,8 +100,9 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 2.1 | Supabase-foundation + DB-schema | ✅ Afgerond — schema + RLS live op Supabase |
 | 2.2 | Auth wiring (login/register/logout op echte auth) | ✅ Afgerond |
 | 3.1 | Game library uit de database (seed + catalogus-queries) | ✅ Afgerond |
-| 3.2 | Game search | ⏳ Volgende stap |
-| 3.3–3.4 | Admin games + CSV-import, volledige catalogus (IGDB) | 🔲 Gepland |
+| 3.2 | Game search (`/search`, titel + aliassen, accent-ongevoelig) | ✅ Afgerond |
+| 3.3 | Admin games + CSV-import | ⏳ Volgende stap |
+| 3.4 | Volledige catalogus (IGDB) | 🔲 Gepland |
 | 4–9 | Playthroughs → public launch | 🔲 Gepland |
 
 ## Documentatie

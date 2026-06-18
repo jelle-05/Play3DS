@@ -37,6 +37,28 @@ export async function getCatalogGames(): Promise<Game[]> {
   return data.map(rowToGame);
 }
 
+// Zoek games op titel of alias (accent-ongevoelig, dedupe + relevantie).
+// Gebruikt de Postgres-functie search_games (migratie 0003). Lege query →
+// lege lijst. Valt terug op een eenvoudige titel-filter over de mock-data
+// wanneer Supabase niet geconfigureerd is.
+export async function searchCatalogGames(query: string): Promise<Game[]> {
+  const q = query.trim();
+  if (!q) return [];
+
+  if (!isConfigured) {
+    const needle = q.toLowerCase();
+    return MOCK_GAMES.filter((g) => g.title.toLowerCase().includes(needle));
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("search_games", {
+    search_query: q,
+  });
+
+  if (error || !data) return [];
+  return (data as unknown[]).map(rowToGame);
+}
+
 // Eén game op slug. null als niet gevonden.
 export async function getCatalogGameBySlug(slug: string): Promise<Game | null> {
   if (!isConfigured) {

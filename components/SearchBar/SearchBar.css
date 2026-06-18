@@ -1,0 +1,73 @@
+/* ─── SearchBar — /search ──────────────────────────────────────────── */
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-bar__icon {
+  position: absolute;
+  left: var(--space-4);
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-soft);
+  pointer-events: none;
+}
+
+.search-bar__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-4) var(--space-12) var(--space-4) var(--space-10);
+  border-radius: var(--radius-2xl, var(--radius-lg));
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-bar__input::placeholder {
+  color: var(--color-text-soft);
+}
+
+.search-bar__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+/* Verberg de native clear-knop van type="search" — we hebben een eigen knop. */
+.search-bar__input::-webkit-search-decoration,
+.search-bar__input::-webkit-search-cancel-button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.search-bar__clear {
+  position: absolute;
+  right: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.search-bar__clear svg {
+  width: 16px;
+  height: 16px;
+}
+
+.search-bar__clear:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
