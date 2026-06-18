@@ -1,0 +1,138 @@
+/* ─── StartPlaythrough — start-flow op de game-detailpagina ─────────── */
+
+.start-pt__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full, 999px);
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-base);
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.start-pt__cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.start-pt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl, var(--radius-lg));
+  max-width: 560px;
+}
+
+.start-pt__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.start-pt__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.start-pt__hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-soft);
+}
+
+.start-pt__goals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.start-pt__goal {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.start-pt__goal--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.start-pt__time {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.start-pt__time-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.start-pt__time-input input {
+  width: 64px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.start-pt__time-input input:focus {
+  border-color: var(--color-primary);
+}
+
+.start-pt__text {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.start-pt__text:focus {
+  border-color: var(--color-primary);
+}
+
+.start-pt__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.start-pt__cancel {
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.start-pt__cancel:hover {
+  color: var(--color-text);
+}

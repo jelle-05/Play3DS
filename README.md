@@ -103,7 +103,11 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 3.2 | Game search (`/search`, titel + aliassen, accent-ongevoelig) | ✅ Afgerond |
 | 3.3 | Admin games + CSV-import (`/admin`, owner-only) | ✅ Afgerond |
 | 3.4 | Volledige catalogus (IGDB-sync via `/admin/igdb`) | ✅ Afgerond |
-| 4–9 | Playthroughs → public launch | 🔲 Gepland |
+| 4.1 | Playthrough starten (datalaag + start-flow op detailpagina) | ✅ Afgerond |
+| 4.2 | Dashboard op echte data | ⏳ Volgende stap |
+| 4.3 | Quick update (echte opslag) | 🔲 Gepland |
+| 4.4 | Playthrough-detail + timeline | 🔲 Gepland |
+| 5–9 | Reviews → public launch | 🔲 Gepland |
 
 ## Documentatie
 

@@ -98,7 +98,7 @@ export default function GameDetailHero({ game }: GameDetailHeroProps) {
 
             {/* CTAs — prototype links; real start-playthrough flow comes later */}
             <div className="game-hero__actions">
-              <ButtonIcon href="/dashboard" label={ctaLabel} variant="primary" />
+              <ButtonIcon href="#playthrough" label={ctaLabel} variant="primary" />
               <ButtonIcon href="/games" label="Browse Library" variant="secondary" />
             </div>
           </div>

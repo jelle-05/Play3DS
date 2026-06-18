@@ -67,6 +67,14 @@
   color: var(--color-text-soft);
 }
 
+.game-detail-error {
+  max-width: 1100px;
+  margin: 0 auto var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  color: var(--color-danger, #dc2626);
+  font-size: var(--text-sm);
+}
+
 /* ── Reviews section ── */
 .game-detail-reviews {
   max-width: 1100px;
