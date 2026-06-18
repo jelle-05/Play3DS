@@ -8,7 +8,21 @@ import {
   averageMinutesForGoal,
   computeProgress,
   type GoalType,
+  type PlaythroughStatus,
 } from "@/lib/playthroughs";
+
+const STATUSES: PlaythroughStatus[] = [
+  "want_to_play",
+  "playing",
+  "paused",
+  "completed",
+  "dropped",
+];
+
+function revalidatePlaythrough(id: string) {
+  revalidatePath(`/playthroughs/${id}`);
+  revalidatePath("/dashboard");
+}
 
 const GOALS: GoalType[] = ["main_story", "main_extras", "completionist", "just_tracking"];
 
@@ -127,4 +141,137 @@ export async function addPlaytime(playthroughId: string, minutesToAdd: number) {
   });
 
   revalidatePath("/dashboard");
+}
+
+/* ── Beheer (4.4 — playthrough-detailpagina) ───────────────────────── */
+
+// Statuswijziging — schrijft een timeline-event en zet completed_at.
+export async function updatePlaythroughStatus(
+  playthroughId: string,
+  status: PlaythroughStatus
+) {
+  if (!STATUSES.includes(status)) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: pt } = await supabase
+    .from("playthroughs")
+    .select("id, status, played_minutes, estimated_progress_percent")
+    .eq("id", playthroughId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!pt) return;
+  if (pt.status === status) return;
+
+  const update: Record<string, unknown> = {
+    status,
+    updated_at: new Date().toISOString(),
+  };
+  update.completed_at = status === "completed" ? new Date().toISOString() : null;
+
+  await supabase.from("playthroughs").update(update).eq("id", playthroughId);
+
+  await supabase.from("playthrough_updates").insert({
+    playthrough_id: playthroughId,
+    user_id: user.id,
+    previous_status: pt.status,
+    new_status: status,
+    played_minutes: pt.played_minutes ?? 0,
+    estimated_progress_percent: pt.estimated_progress_percent ?? null,
+  });
+
+  revalidatePlaythrough(playthroughId);
+}
+
+// Handmatige voortgangscorrectie (0–100). Wint van de schatting.
+export async function setManualProgress(playthroughId: string, percent: number) {
+  const pct = Math.max(0, Math.min(100, Math.round(percent)));
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: pt } = await supabase
+    .from("playthroughs")
+    .select("id, played_minutes")
+    .eq("id", playthroughId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!pt) return;
+
+  await supabase
+    .from("playthroughs")
+    .update({
+      manual_progress_percent: pct,
+      progress_source: "manual",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", playthroughId);
+
+  await supabase.from("playthrough_updates").insert({
+    playthrough_id: playthroughId,
+    user_id: user.id,
+    played_minutes: pt.played_minutes ?? 0,
+    manual_progress_percent: pct,
+  });
+
+  revalidatePlaythrough(playthroughId);
+}
+
+// Notitie toevoegen aan de timeline.
+export async function addPlaythroughNote(playthroughId: string, note: string) {
+  const text = note.trim();
+  if (!text) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: pt } = await supabase
+    .from("playthroughs")
+    .select("id, played_minutes")
+    .eq("id", playthroughId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!pt) return;
+
+  await supabase
+    .from("playthroughs")
+    .update({ progress_note: text, updated_at: new Date().toISOString() })
+    .eq("id", playthroughId);
+
+  await supabase.from("playthrough_updates").insert({
+    playthrough_id: playthroughId,
+    user_id: user.id,
+    played_minutes: pt.played_minutes ?? 0,
+    progress_note: text,
+  });
+
+  revalidatePlaythrough(playthroughId);
+}
+
+// Playthrough verwijderen → terug naar het dashboard.
+export async function deletePlaythrough(playthroughId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase
+    .from("playthroughs")
+    .delete()
+    .eq("id", playthroughId)
+    .eq("user_id", user.id);
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
