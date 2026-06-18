@@ -131,9 +131,13 @@ export default function ReviewCard({ review, showGame = true, canDelete = false 
           >
             <span aria-hidden="true">{liked ? "♥" : "♡"}</span> {likeCount}
           </button>
-          <span className="review-card__action review-card__action--static">
+          <Link
+            href={`/reviews/${review.id}`}
+            className="review-card__action review-card__action--link"
+            aria-label="View comments"
+          >
             <span aria-hidden="true">💬</span> {review.comments}
-          </span>
+          </Link>
           {canDelete && (
             <button
               type="button"

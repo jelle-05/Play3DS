@@ -261,3 +261,12 @@ button.review-card__action:active {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.review-card__action--link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.review-card__action--link:hover {
+  color: var(--color-primary);
+}

@@ -144,3 +144,39 @@ export async function deleteReview(reviewId: string) {
 
   revalidatePath("/reviews");
 }
+
+// Comment plaatsen bij een review.
+export async function addComment(reviewId: string, body: string) {
+  const text = body.trim();
+  if (!reviewId || !text) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from("review_comments").insert({
+    review_id: reviewId,
+    user_id: user.id,
+    body: text.slice(0, 2000),
+  });
+
+  revalidatePath(`/reviews/${reviewId}`);
+  revalidatePath("/reviews");
+}
+
+// Comment verwijderen — RLS staat eigenaar én admin toe.
+export async function deleteComment(commentId: string, reviewId: string) {
+  if (!commentId) return;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from("review_comments").delete().eq("id", commentId);
+
+  if (reviewId) revalidatePath(`/reviews/${reviewId}`);
+  revalidatePath("/reviews");
+}

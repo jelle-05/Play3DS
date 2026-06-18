@@ -30,6 +30,15 @@ export interface Review {
   likedByMe?: boolean;
 }
 
+export interface ReviewComment {
+  id: string;
+  author: string;
+  authorInitials: string;
+  body: string;
+  relativeTime: string;
+  isOwner: boolean;
+}
+
 // Naam → initialen (max 2 letters).
 export function initialsFrom(name: string): string {
   const parts = name.replace(/[^a-zA-Z0-9 ]/g, "").trim().split(/\s+/);
