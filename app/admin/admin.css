@@ -154,6 +154,33 @@
   font-size: var(--text-2xl);
 }
 
+.admin-igdb__checks {
+  margin-top: var(--space-6);
+}
+
+.admin-igdb__checks ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.admin-igdb__checks strong {
+  color: var(--color-text);
+}
+
+.admin-check--ok {
+  color: #059669;
+  font-weight: 700;
+}
+
+.admin-check--bad {
+  color: var(--color-danger, #dc2626);
+  font-weight: 700;
+}
+
 .admin-note {
   color: var(--color-text-muted);
   font-size: var(--text-base);

@@ -8,7 +8,9 @@ import {
   isIgdbConfigured,
   fetchIgdb3dsGamesPage,
   fetchIgdbTimeToBeats,
+  runIgdbDiagnostics,
   IGDB_PAGE_SIZE,
+  type IgdbCheck,
 } from "@/lib/igdb";
 
 async function requireAdmin() {
@@ -26,6 +28,21 @@ export interface SyncPageResult {
   withTime: number;
   nextOffset: number;
   error?: string;
+}
+
+// Test de IGDB-verbinding en rapporteer per query-variant wat werkt.
+export async function diagnoseIgdb(): Promise<IgdbCheck[]> {
+  await requireAdmin();
+  if (!isIgdbConfigured) {
+    return [{ label: "Config", ok: false, detail: "Missing IGDB env vars." }];
+  }
+  try {
+    return await runIgdbDiagnostics();
+  } catch (e) {
+    return [
+      { label: "Diagnostics", ok: false, detail: e instanceof Error ? e.message : "error" },
+    ];
+  }
 }
 
 function confidenceFor(sampleCount: number | null): string {
