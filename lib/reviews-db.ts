@@ -31,8 +31,42 @@ async function usernamesFor(
   return map;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToReview(row: any, usernames: Map<string, string>, currentUserId?: string): Review {
+interface LikeInfo {
+  counts: Map<string, number>;
+  liked: Set<string>;
+}
+
+// Like-telling per review + welke de huidige gebruiker heeft geliket — in één
+// query (likes_count wordt niet als kolom bijgehouden vanwege RLS).
+async function likeInfoFor(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  userId: string | undefined,
+  reviewIds: string[]
+): Promise<LikeInfo> {
+  const counts = new Map<string, number>();
+  const liked = new Set<string>();
+  if (reviewIds.length === 0) return { counts, liked };
+
+  const { data } = await supabase
+    .from("review_likes")
+    .select("review_id, user_id")
+    .in("review_id", reviewIds);
+
+  for (const row of data ?? []) {
+    counts.set(row.review_id, (counts.get(row.review_id) ?? 0) + 1);
+    if (userId && row.user_id === userId) liked.add(row.review_id);
+  }
+  return { counts, liked };
+}
+
+function rowToReview(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  row: any,
+  usernames: Map<string, string>,
+  currentUserId?: string,
+  likeInfo?: LikeInfo
+): Review {
   const g = row.games;
   const gameSlug: string = g?.slug ?? row.game_id;
   const author = usernames.get(row.user_id) ?? "Player";
@@ -50,10 +84,11 @@ function rowToReview(row: any, usernames: Map<string, string>, currentUserId?: s
     playtimeAtReview: null,
     goalType: null,
     hasSpoilers: row.has_spoilers ?? false,
-    likes: row.likes_count ?? 0,
+    likes: likeInfo?.counts.get(row.id) ?? 0,
     comments: row.comments_count ?? 0,
     relativeTime: formatRelativeTime(row.created_at),
     isOwner: !!currentUserId && row.user_id === currentUserId,
+    likedByMe: likeInfo?.liked.has(row.id) ?? false,
   };
 }
 
@@ -75,7 +110,8 @@ export async function getRecentReviews(limit = 30): Promise<Review[]> {
 
   if (error || !data) return [];
   const usernames = await usernamesFor(supabase, data.map((r) => r.user_id));
-  return data.map((r) => rowToReview(r, usernames, user?.id));
+  const likeInfo = await likeInfoFor(supabase, user?.id, data.map((r) => r.id));
+  return data.map((r) => rowToReview(r, usernames, user?.id, likeInfo));
 }
 
 // De review van de huidige gebruiker voor één game (game-uuid), of null.
@@ -97,7 +133,8 @@ export async function getMyReviewForGame(gameId: string): Promise<Review | null>
 
   if (error || !data) return null;
   const usernames = await usernamesFor(supabase, [data.user_id]);
-  return rowToReview(data, usernames, user.id);
+  const likeInfo = await likeInfoFor(supabase, user.id, [data.id]);
+  return rowToReview(data, usernames, user.id, likeInfo);
 }
 
 // Reviews voor één game. `gameKey` = game-uuid (DB) of slug (mock-fallback).
@@ -120,5 +157,6 @@ export async function getReviewsForGameDb(gameKey: string): Promise<Review[]> {
 
   if (error || !data) return [];
   const usernames = await usernamesFor(supabase, data.map((r) => r.user_id));
-  return data.map((r) => rowToReview(r, usernames, user?.id));
+  const likeInfo = await likeInfoFor(supabase, user?.id, data.map((r) => r.id));
+  return data.map((r) => rowToReview(r, usernames, user?.id, likeInfo));
 }

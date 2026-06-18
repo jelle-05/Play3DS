@@ -103,6 +103,33 @@ export async function updateReview(formData: FormData) {
   revalidatePath("/reviews");
 }
 
+// Like/unlike togglen. Houdt reviews.likes_count synchroon (hertelt na afloop).
+export async function toggleReviewLike(reviewId: string) {
+  if (!reviewId) return;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: existing } = await supabase
+    .from("review_likes")
+    .select("id")
+    .eq("review_id", reviewId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from("review_likes").delete().eq("id", existing.id);
+  } else {
+    await supabase.from("review_likes").insert({ review_id: reviewId, user_id: user.id });
+  }
+  // likes_count wordt niet bijgehouden op reviews (RLS: alleen de eigenaar mag
+  // reviews updaten) — de telling wordt bij het lezen berekend.
+
+  revalidatePath("/reviews");
+}
+
 // Verwijderen — RLS staat dit toe voor de eigenaar én voor admins
 // (reviews_modify_own / reviews_admin_delete), dus geen user-filter nodig.
 export async function deleteReview(reviewId: string) {
