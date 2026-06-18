@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { reviewStatusLabel, type Review } from "@/lib/reviews";
+import { deleteReview } from "@/app/reviews/actions";
 import "./ReviewCard.css";
 
 interface ReviewCardProps {
   review: Review;
   // Hide the game context row when the card is already shown on that game's page.
   showGame?: boolean;
+  // Toon een verwijderknop (eigenaar of admin) — gebruikt op de reviewlijsten.
+  canDelete?: boolean;
 }
 
 function scoreTier(rating: number): "high" | "mid" | "low" {
@@ -17,12 +21,22 @@ function scoreTier(rating: number): "high" | "mid" | "low" {
   return "low";
 }
 
-export default function ReviewCard({ review, showGame = true }: ReviewCardProps) {
+export default function ReviewCard({ review, showGame = true, canDelete = false }: ReviewCardProps) {
+  const router = useRouter();
   const [revealed, setRevealed] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   const likeCount = review.likes + (liked ? 1 : 0);
   const spoilerHidden = review.hasSpoilers && !revealed;
+
+  function handleDelete() {
+    if (!confirm("Delete this review?")) return;
+    startTransition(async () => {
+      await deleteReview(review.id);
+      router.refresh();
+    });
+  }
 
   return (
     <article className="review-card">
@@ -110,6 +124,16 @@ export default function ReviewCard({ review, showGame = true }: ReviewCardProps)
           <span className="review-card__action review-card__action--static">
             <span aria-hidden="true">💬</span> {review.comments}
           </span>
+          {canDelete && (
+            <button
+              type="button"
+              className="review-card__action review-card__delete"
+              onClick={handleDelete}
+              disabled={pending}
+            >
+              {pending ? "…" : "Delete"}
+            </button>
+          )}
         </div>
       </footer>
     </article>

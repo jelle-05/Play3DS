@@ -120,3 +120,7 @@
     padding: 0 var(--space-4) var(--space-12);
   }
 }
+
+.game-detail-reviews__compose {
+  margin-bottom: var(--space-6);
+}

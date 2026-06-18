@@ -1,0 +1,162 @@
+/* ─── ReviewComposer — review schrijven/bewerken op de game-detailpagina ─ */
+
+.review-composer__signin {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+.review-composer__link {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.review-composer__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.review-composer__cta:hover {
+  transform: translateY(-1px);
+  background: var(--color-surface-soft);
+}
+
+.review-composer__mine-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.review-composer__btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.review-composer__btn:hover {
+  border-color: var(--color-primary);
+}
+
+.review-composer__btn--danger {
+  color: var(--color-danger, #dc2626);
+  border-color: var(--color-danger, #dc2626);
+}
+
+.review-composer__btn--danger:hover {
+  background: var(--color-danger, #dc2626);
+  color: #fff;
+}
+
+/* Form */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl, var(--radius-lg));
+  max-width: 620px;
+}
+
+.review-form__row {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.review-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.review-form__field--sm {
+  flex: 0 0 140px;
+}
+
+.review-form__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.review-form__input {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.review-form__input:focus {
+  border-color: var(--color-primary);
+}
+
+.review-form__textarea {
+  resize: vertical;
+}
+
+.review-form__check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.review-form__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.review-form__submit {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full, 999px);
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-base);
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.review-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.review-form__cancel {
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-form__cancel:hover {
+  color: var(--color-text);
+}

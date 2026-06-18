@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
 import { getRecentReviews } from "@/lib/reviews-db";
+import { getSessionUser } from "@/lib/auth";
 import "./page.css";
 
 export const metadata: Metadata = {
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ReviewsPage() {
-  const reviews = await getRecentReviews();
+  const [reviews, user] = await Promise.all([getRecentReviews(), getSessionUser()]);
+  const isAdmin = user?.role === "admin";
 
   return (
     <div className="reviews-page">
@@ -31,7 +33,11 @@ export default async function ReviewsPage() {
       ) : (
         <div className="reviews-grid">
           {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              canDelete={!!review.isOwner || isAdmin}
+            />
           ))}
         </div>
       )}

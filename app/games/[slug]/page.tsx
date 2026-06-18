@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import GameDetailHero from "@/components/GameDetailHero/GameDetailHero";
 import PlaythroughPanel from "@/components/PlaythroughPanel/PlaythroughPanel";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
+import ReviewComposer from "@/components/ReviewComposer/ReviewComposer";
 import { getCatalogGameBySlug } from "@/lib/catalog";
-import { getReviewsForGameDb } from "@/lib/reviews-db";
+import { getReviewsForGameDb, getMyReviewForGame } from "@/lib/reviews-db";
 import { getSessionUser } from "@/lib/auth";
 import {
   getTimeEstimateForGame,
@@ -39,12 +40,16 @@ export default async function GameDetailPage({ params, searchParams }: PageProps
 
   // Playthrough-context + reviews uit de DB (op game-uuid; mock-fallback op slug).
   const reviewKey = process.env.NEXT_PUBLIC_SUPABASE_URL ? game.id : game.slug ?? game.id;
-  const [session, estimate, playthroughs, reviews] = await Promise.all([
+  const [session, estimate, playthroughs, allReviews, myReview] = await Promise.all([
     getSessionUser(),
     getTimeEstimateForGame(game.id),
     getPlaythroughsForGame(game.id),
     getReviewsForGameDb(reviewKey),
+    getMyReviewForGame(game.id),
   ]);
+  const isAdmin = session?.role === "admin";
+  // Eigen review tonen we los via de composer; haal 'm uit de algemene lijst.
+  const reviews = allReviews.filter((r) => r.id !== myReview?.id);
 
   const averagePlaytime = estimate?.mainMinutes
     ? `~${formatMinutes(estimate.mainMinutes)} (main story)`
@@ -104,19 +109,37 @@ export default async function GameDetailPage({ params, searchParams }: PageProps
       </div>
 
       {/* Reviews for this game */}
-      {reviews.length > 0 && (
-        <section className="game-detail-reviews">
-          <div className="game-detail-reviews__header">
-            <h2 className="feed-section-title">Reviews</h2>
-            <span className="pill pill-surface">{reviews.length}</span>
-          </div>
+      <section className="game-detail-reviews">
+        <div className="game-detail-reviews__header">
+          <h2 className="feed-section-title">Reviews</h2>
+          {reviews.length + (myReview ? 1 : 0) > 0 && (
+            <span className="pill pill-surface">{reviews.length + (myReview ? 1 : 0)}</span>
+          )}
+        </div>
+
+        {/* Write / edit your own review */}
+        <div className="game-detail-reviews__compose">
+          <ReviewComposer
+            gameId={game.id}
+            slug={game.slug ?? slug}
+            isLoggedIn={!!session}
+            myReview={myReview}
+          />
+        </div>
+
+        {reviews.length > 0 && (
           <div className="game-detail-reviews__grid">
             {reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} showGame={false} />
+              <ReviewCard
+                key={review.id}
+                review={review}
+                showGame={false}
+                canDelete={!!review.isOwner || isAdmin}
+              />
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 }
