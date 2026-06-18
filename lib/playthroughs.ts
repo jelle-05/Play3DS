@@ -1,6 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { gradientForSlug } from "@/lib/games";
-import type { Playthrough, TimeEstimate } from "@/lib/playthrough-types";
+import type {
+  Playthrough,
+  PlaythroughUpdate,
+  TimeEstimate,
+} from "@/lib/playthrough-types";
 
 // Server-only queries voor playthroughs. Pure helpers/constants/types staan in
 // lib/playthrough-types.ts (client-safe). Re-export voor gemak op de server.
@@ -32,6 +36,7 @@ function rowToPlaythrough(row: any): Playthrough {
   const g = row.games;
   return {
     id: row.id,
+    userId: row.user_id ?? undefined,
     gameId: row.game_id,
     runName: row.run_name ?? null,
     status: row.status,
@@ -59,7 +64,7 @@ function rowToPlaythrough(row: any): Playthrough {
 }
 
 const PLAYTHROUGH_SELECT =
-  "id, game_id, run_name, status, goal_type, played_minutes, estimated_progress_percent, manual_progress_percent, progress_source, progress_note, started_at, completed_at, games ( id, title, slug, platform, genre, release_year, cover_url )";
+  "id, user_id, game_id, run_name, status, goal_type, played_minutes, estimated_progress_percent, manual_progress_percent, progress_source, progress_note, started_at, completed_at, games ( id, title, slug, platform, genre, release_year, cover_url )";
 
 // Playthroughs van de huidige gebruiker voor één game (detailpagina).
 export async function getPlaythroughsForGame(
@@ -80,6 +85,46 @@ export async function getPlaythroughsForGame(
 
   if (error || !data) return [];
   return data.map(rowToPlaythrough);
+}
+
+// Eén playthrough op id (RLS: eigen of publiek zichtbaar). null als niet gevonden.
+export async function getPlaythroughById(id: string): Promise<Playthrough | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("playthroughs")
+    .select(PLAYTHROUGH_SELECT)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return rowToPlaythrough(data);
+}
+
+// De timeline-events van een playthrough (nieuwste eerst).
+export async function getPlaythroughUpdates(
+  playthroughId: string
+): Promise<PlaythroughUpdate[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("playthrough_updates")
+    .select(
+      "id, previous_status, new_status, played_minutes, minutes_added, estimated_progress_percent, manual_progress_percent, progress_note, created_at"
+    )
+    .eq("playthrough_id", playthroughId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data.map((r) => ({
+    id: r.id,
+    previousStatus: r.previous_status ?? null,
+    newStatus: r.new_status ?? null,
+    playedMinutes: r.played_minutes ?? null,
+    minutesAdded: r.minutes_added ?? null,
+    estimatedProgressPercent: r.estimated_progress_percent ?? null,
+    manualProgressPercent: r.manual_progress_percent ?? null,
+    progressNote: r.progress_note ?? null,
+    createdAt: r.created_at,
+  }));
 }
 
 // Alle playthroughs van de huidige gebruiker (dashboard). Lege lijst als niet

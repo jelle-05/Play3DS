@@ -106,7 +106,7 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 4.1 | Playthrough starten (datalaag + start-flow op detailpagina) | ✅ Afgerond |
 | 4.2 | Dashboard op echte data | ✅ Afgerond |
 | 4.3 | Quick update (echte opslag) | ✅ Afgerond |
-| 4.4 | Playthrough-detail + timeline | ⏳ Volgende stap |
+| 4.4 | Playthrough-detail + timeline (`/playthroughs/[id]`) | ✅ Afgerond |
 | 5–9 | Reviews → public launch | 🔲 Gepland |
 
 ## Documentatie

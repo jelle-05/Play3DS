@@ -50,7 +50,8 @@ export default function PlaythroughPanel({
               {playthroughs.map((p) => {
                 const progress = effectiveProgress(p);
                 return (
-                  <li key={p.id} className="pt-card">
+                  <li key={p.id}>
+                    <Link href={`/playthroughs/${p.id}`} className="pt-card">
                     <div className="pt-card__top">
                       <span className={`pill pill-${DB_TO_UI_STATUS[p.status]}`}>
                         {STATUS_LABELS[p.status]}
@@ -73,6 +74,7 @@ export default function PlaythroughPanel({
                         <div className="pt-card__bar-fill" style={{ width: `${progress}%` }} />
                       </div>
                     )}
+                    </Link>
                   </li>
                 );
               })}

@@ -58,8 +58,21 @@ export interface PlaythroughGame {
   gradientClass: string;
 }
 
+export interface PlaythroughUpdate {
+  id: string;
+  previousStatus: PlaythroughStatus | null;
+  newStatus: PlaythroughStatus | null;
+  playedMinutes: number | null;
+  minutesAdded: number | null;
+  estimatedProgressPercent: number | null;
+  manualProgressPercent: number | null;
+  progressNote: string | null;
+  createdAt: string;
+}
+
 export interface Playthrough {
   id: string;
+  userId?: string;
   gameId: string;
   runName: string | null;
   status: PlaythroughStatus;
