@@ -5,6 +5,7 @@ import {
   initialsFrom,
   formatRelativeTime,
   type Review,
+  type ReviewComment,
   type ReviewStatus,
 } from "@/lib/reviews";
 
@@ -31,33 +32,43 @@ async function usernamesFor(
   return map;
 }
 
-interface LikeInfo {
-  counts: Map<string, number>;
+interface ReviewMeta {
+  likeCounts: Map<string, number>;
   liked: Set<string>;
+  commentCounts: Map<string, number>;
 }
 
-// Like-telling per review + welke de huidige gebruiker heeft geliket — in één
-// query (likes_count wordt niet als kolom bijgehouden vanwege RLS).
-async function likeInfoFor(
+// Likes (telling + eigen-like) en comment-tellingen per review — berekend bij
+// het lezen, want likes_count/comments_count worden niet als kolom bijgehouden
+// (RLS staat niet-eigenaars geen reviews-update toe).
+async function reviewMetaFor(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any,
   userId: string | undefined,
   reviewIds: string[]
-): Promise<LikeInfo> {
-  const counts = new Map<string, number>();
+): Promise<ReviewMeta> {
+  const likeCounts = new Map<string, number>();
   const liked = new Set<string>();
-  if (reviewIds.length === 0) return { counts, liked };
+  const commentCounts = new Map<string, number>();
+  if (reviewIds.length === 0) return { likeCounts, liked, commentCounts };
 
-  const { data } = await supabase
-    .from("review_likes")
-    .select("review_id, user_id")
-    .in("review_id", reviewIds);
+  const [likes, comments] = await Promise.all([
+    supabase.from("review_likes").select("review_id, user_id").in("review_id", reviewIds),
+    supabase
+      .from("review_comments")
+      .select("review_id")
+      .eq("is_deleted", false)
+      .in("review_id", reviewIds),
+  ]);
 
-  for (const row of data ?? []) {
-    counts.set(row.review_id, (counts.get(row.review_id) ?? 0) + 1);
+  for (const row of likes.data ?? []) {
+    likeCounts.set(row.review_id, (likeCounts.get(row.review_id) ?? 0) + 1);
     if (userId && row.user_id === userId) liked.add(row.review_id);
   }
-  return { counts, liked };
+  for (const row of comments.data ?? []) {
+    commentCounts.set(row.review_id, (commentCounts.get(row.review_id) ?? 0) + 1);
+  }
+  return { likeCounts, liked, commentCounts };
 }
 
 function rowToReview(
@@ -65,7 +76,7 @@ function rowToReview(
   row: any,
   usernames: Map<string, string>,
   currentUserId?: string,
-  likeInfo?: LikeInfo
+  meta?: ReviewMeta
 ): Review {
   const g = row.games;
   const gameSlug: string = g?.slug ?? row.game_id;
@@ -84,11 +95,11 @@ function rowToReview(
     playtimeAtReview: null,
     goalType: null,
     hasSpoilers: row.has_spoilers ?? false,
-    likes: likeInfo?.counts.get(row.id) ?? 0,
-    comments: row.comments_count ?? 0,
+    likes: meta?.likeCounts.get(row.id) ?? 0,
+    comments: meta?.commentCounts.get(row.id) ?? 0,
     relativeTime: formatRelativeTime(row.created_at),
     isOwner: !!currentUserId && row.user_id === currentUserId,
-    likedByMe: likeInfo?.liked.has(row.id) ?? false,
+    likedByMe: meta?.liked.has(row.id) ?? false,
   };
 }
 
@@ -110,8 +121,8 @@ export async function getRecentReviews(limit = 30): Promise<Review[]> {
 
   if (error || !data) return [];
   const usernames = await usernamesFor(supabase, data.map((r) => r.user_id));
-  const likeInfo = await likeInfoFor(supabase, user?.id, data.map((r) => r.id));
-  return data.map((r) => rowToReview(r, usernames, user?.id, likeInfo));
+  const meta = await reviewMetaFor(supabase, user?.id, data.map((r) => r.id));
+  return data.map((r) => rowToReview(r, usernames, user?.id, meta));
 }
 
 // De review van de huidige gebruiker voor één game (game-uuid), of null.
@@ -133,8 +144,8 @@ export async function getMyReviewForGame(gameId: string): Promise<Review | null>
 
   if (error || !data) return null;
   const usernames = await usernamesFor(supabase, [data.user_id]);
-  const likeInfo = await likeInfoFor(supabase, user.id, [data.id]);
-  return rowToReview(data, usernames, user.id, likeInfo);
+  const meta = await reviewMetaFor(supabase, user.id, [data.id]);
+  return rowToReview(data, usernames, user.id, meta);
 }
 
 // Reviews voor één game. `gameKey` = game-uuid (DB) of slug (mock-fallback).
@@ -157,6 +168,58 @@ export async function getReviewsForGameDb(gameKey: string): Promise<Review[]> {
 
   if (error || !data) return [];
   const usernames = await usernamesFor(supabase, data.map((r) => r.user_id));
-  const likeInfo = await likeInfoFor(supabase, user?.id, data.map((r) => r.id));
-  return data.map((r) => rowToReview(r, usernames, user?.id, likeInfo));
+  const meta = await reviewMetaFor(supabase, user?.id, data.map((r) => r.id));
+  return data.map((r) => rowToReview(r, usernames, user?.id, meta));
+}
+
+// Eén review op id (RLS: publiek of eigen). null als niet gevonden.
+export async function getReviewById(id: string): Promise<Review | null> {
+  if (!isConfigured) return MOCK_REVIEWS.find((r) => r.id === id) ?? null;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(REVIEW_SELECT)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const usernames = await usernamesFor(supabase, [data.user_id]);
+  const meta = await reviewMetaFor(supabase, user?.id, [data.id]);
+  return rowToReview(data, usernames, user?.id, meta);
+}
+
+// Comments van een review (niet-verwijderd, oudste eerst).
+export async function getCommentsForReview(reviewId: string): Promise<ReviewComment[]> {
+  if (!isConfigured) return [];
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from("review_comments")
+    .select("id, user_id, body, created_at")
+    .eq("review_id", reviewId)
+    .eq("is_deleted", false)
+    .order("created_at", { ascending: true });
+
+  if (error || !data) return [];
+  const usernames = await usernamesFor(supabase, data.map((r) => r.user_id));
+  return data.map((r) => {
+    const author = usernames.get(r.user_id) ?? "Player";
+    return {
+      id: r.id,
+      author,
+      authorInitials: initialsFrom(author),
+      body: r.body ?? "",
+      relativeTime: formatRelativeTime(r.created_at),
+      isOwner: !!user && r.user_id === user.id,
+    };
+  });
 }

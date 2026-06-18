@@ -110,7 +110,7 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 5.1 | Reviews uit de database (read) | ✅ Afgerond |
 | 5.2 | Review schrijven/bewerken/verwijderen | ✅ Afgerond |
 | 5.3 | Review likes | ✅ Afgerond |
-| 5.4 | Comments + `/reviews/[id]` | ⏳ Volgende stap |
+| 5.4 | Comments + `/reviews/[id]` | ✅ Afgerond |
 | 6–9 | Profielen → public launch | 🔲 Gepland |
 
 ## Documentatie
