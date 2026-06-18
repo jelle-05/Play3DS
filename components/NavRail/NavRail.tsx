@@ -64,6 +64,12 @@ const LOGIN_ICON = (
   </svg>
 );
 
+const ADMIN_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z" />
+  </svg>
+);
+
 const LOGOUT_ICON = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -79,13 +85,33 @@ export default function NavRail() {
 
   // Auth-state (client-side) — bepaalt login- vs logout-actie.
   const [authed, setAuthed] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
+
+    // Haal de rol op zodat alleen admins de Admin-link zien.
+    const loadRole = async (userId: string | undefined) => {
+      if (!userId) {
+        setIsAdmin(false);
+        return;
+      }
+      const { data } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("user_id", userId)
+        .maybeSingle();
+      setIsAdmin(data?.role === "admin");
+    };
+
+    supabase.auth.getUser().then(({ data }) => {
+      setAuthed(!!data.user);
+      loadRole(data.user?.id);
+    });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthed(!!session?.user);
+      loadRole(session?.user?.id);
     });
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -132,6 +158,16 @@ export default function NavRail() {
 
         {/* Bottom-pinned auth-actie */}
         <div className="nav-rail-foot">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={`nav-item${pathname.startsWith("/admin") ? " nav-item--active" : ""}`}
+              aria-current={pathname.startsWith("/admin") ? "page" : undefined}
+            >
+              <span className="nav-item-icon">{ADMIN_ICON}</span>
+              <span className="nav-item-label">Admin</span>
+            </Link>
+          )}
           {authed ? (
             <form action={signOut}>
               <button type="submit" className="nav-item">

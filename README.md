@@ -101,8 +101,8 @@ designs/           visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 2.2 | Auth wiring (login/register/logout op echte auth) | ✅ Afgerond |
 | 3.1 | Game library uit de database (seed + catalogus-queries) | ✅ Afgerond |
 | 3.2 | Game search (`/search`, titel + aliassen, accent-ongevoelig) | ✅ Afgerond |
-| 3.3 | Admin games + CSV-import | ⏳ Volgende stap |
-| 3.4 | Volledige catalogus (IGDB) | 🔲 Gepland |
+| 3.3 | Admin games + CSV-import (`/admin`, owner-only) | ✅ Afgerond |
+| 3.4 | Volledige catalogus (IGDB) | ⏳ Volgende stap |
 | 4–9 | Playthroughs → public launch | 🔲 Gepland |
 
 ## Documentatie
