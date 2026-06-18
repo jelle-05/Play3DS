@@ -76,3 +76,28 @@ inspecteren, kan een **Supabase MCP-server** worden gekoppeld via een lokaal
 
 Dit is puur een ontwikkelhulpmiddel; het staat los van de app-runtime (die de
 keys uit de Vercel env-vars gebruikt).
+
+## 8. (Fase 3.4) IGDB-catalogus koppelen
+
+De volledige 3DS-catalogus wordt opgehaald uit **IGDB**. IGDB gebruikt
+**Twitch**-authenticatie, dus je hebt een gratis Twitch developer-app nodig.
+
+1. Ga naar <https://dev.twitch.tv/console/apps> en log in (Twitch-account +
+   2FA vereist). Klik **Register Your Application**.
+   - **Name:** bijv. `Play3DS`
+   - **OAuth Redirect URLs:** `http://localhost` (wordt niet gebruikt, maar is verplicht)
+   - **Category:** Application Integration
+2. Open de aangemaakte app → noteer de **Client ID** en genereer een **Client Secret**.
+3. Zet beide als environment variables in Vercel (**Production** én **Preview**):
+
+   | Naam | Waarde |
+   |------|--------|
+   | `IGDB_CLIENT_ID` | Client ID uit Twitch |
+   | `IGDB_CLIENT_SECRET` | Client Secret uit Twitch |
+
+   > Server-only — **geen** `NEXT_PUBLIC_`-prefix. De secret hoort nooit in de repo.
+4. Nieuwe deploy triggeren. Daarna verschijnt op **`/admin/igdb`** de sync-knop.
+   De sync haalt de 3DS-games (platform 37 + New 3DS 137, main games) en
+   time-to-beat-schattingen op, in pagina's van 500, en **upsert** ze op `slug`
+   (her-runnen dupliceert nooit). Zonder de env-vars toont de pagina een uitleg
+   en blijft de sync inert.

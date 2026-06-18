@@ -40,6 +40,9 @@ export default async function AdminHome() {
         <Link href="/admin/import" className="admin-btn">
           Import CSV
         </Link>
+        <Link href="/admin/igdb" className="admin-btn">
+          IGDB sync
+        </Link>
       </div>
 
       <p className="admin-note">
