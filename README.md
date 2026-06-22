@@ -51,6 +51,10 @@ app/
     [id]/page.tsx        review-detail + comments
   users/[username]/page.tsx  publiek profiel — hero + stats + publieke library + reviews
   profile/page.tsx       redirect naar het eigen publieke profiel (of /login)
+  settings/              account-instellingen (auth-gate, tabs)
+    profile/page.tsx     profiel bewerken (avatar/bio/land/favoriete game)
+    privacy/page.tsx     public/private profielinstelling
+    actions.ts           updateProfile / updatePrivacy (met validatie)
   admin/                 owner-only adminomgeving (layout met role-gate)
     page.tsx             overview · games/ · import/ · igdb/ · actions.ts
   login/ register/       AuthForm-schermen
@@ -61,6 +65,7 @@ components/
   GameDetailHero/ StartPlaythrough/ PlaythroughPanel/          game-detail + tracking
   PlaythroughManager/ DashboardLibrary/ QuickUpdate/           dashboard + playthrough-beheer
   ReviewCard/ ReviewComposer/ ReviewComments/                  reviews + comments
+  SettingsForm/  SettingsTabs · ProfileSettingsForm · PrivacySettingsForm  account-settings
   AuthForm/ HomeFeed/ ActivityFeed/                            auth + home-feed
   admin/  GameForm · ImportForm · IgdbSync                     admin-componenten
 lib/
@@ -114,7 +119,7 @@ designs/             visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 5.3 | Review likes | ✅ Afgerond |
 | 5.4 | Comments + `/reviews/[id]` | ✅ Afgerond |
 | 6.1 | Publieke profielpagina (`/users/[username]`) + `/profile`-redirect | ✅ Afgerond |
-| 6.2 | Profiel bewerken + privacy (public/private) | 🔲 Gepland |
+| 6.2 | Profiel bewerken (`/settings`) + privacy (public/private) | ✅ Afgerond |
 | 6.3 | Follow-systeem | 🔲 Gepland |
 | 6.4 | Activity events + echte home-feed | 🔲 Gepland |
 | 7–9 | Admin dashboard → public launch | 🔲 Gepland |

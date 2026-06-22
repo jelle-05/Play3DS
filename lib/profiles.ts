@@ -110,6 +110,76 @@ export async function getOwnUsername(): Promise<string | null> {
   return data?.username ?? null;
 }
 
+// Het bewerkbare profiel van de huidige gebruiker (voor /settings). null als
+// niet ingelogd / niet geconfigureerd.
+export interface EditableProfile {
+  username: string;
+  avatarUrl: string | null;
+  bio: string | null;
+  country: string | null;
+  favoriteGameId: string | null;
+  visibility: "public" | "private";
+}
+
+export async function getOwnProfile(): Promise<EditableProfile | null> {
+  if (!isConfigured) return null;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("username, avatar_url, bio, country, favorite_game_id, visibility")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!data) return null;
+  return {
+    username: data.username ?? "",
+    avatarUrl: data.avatar_url ?? null,
+    bio: data.bio ?? null,
+    country: data.country ?? null,
+    favoriteGameId: data.favorite_game_id ?? null,
+    visibility: (data.visibility as "public" | "private") ?? "public",
+  };
+}
+
+// De games die de huidige gebruiker tracket (uniek), voor de favorite-game
+// keuze in de profielinstellingen. Alfabetisch.
+export interface TrackedGameOption {
+  id: string;
+  title: string;
+}
+
+export async function getOwnTrackedGames(): Promise<TrackedGameOption[]> {
+  if (!isConfigured) return [];
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("playthroughs")
+    .select("game_id, games ( id, title )")
+    .eq("user_id", user.id);
+
+  if (error || !data) return [];
+  const seen = new Map<string, string>();
+  for (const row of data) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const g = (row as any).games;
+    if (g?.id && !seen.has(g.id)) seen.set(g.id, g.title ?? "Untitled");
+  }
+  return Array.from(seen, ([id, title]) => ({ id, title })).sort((a, b) =>
+    a.title.localeCompare(b.title)
+  );
+}
+
 // Profiel-tellingen. RLS bepaalt wat zichtbaar is: bezoekers tellen alleen
 // publieke playthroughs/reviews, de eigenaar telt al zijn eigen content.
 export async function getProfileStats(userId: string): Promise<ProfileStats> {

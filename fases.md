@@ -1419,12 +1419,19 @@ Doel: gebruikers en activiteit zichtbaar maken.
 - Geen migratie nodig — het schema (profiles/follows/activity_events + RLS) staat
   al sinds migratie 0001.
 
-### Fase 6.2 — Profiel bewerken + privacy 🔲 Gepland
+### Fase 6.2 — Profiel bewerken + privacy ✅ Afgerond
 
-- `/settings/profile` (avatar, bio, land/regio, favoriete game).
-- `/settings/privacy` (public/private profielinstelling).
-- Server actions met validatie (username-uniciteit/format, bio-lengte, avatar).
-- RLS borgt dat een gebruiker alleen zijn eigen profiel kan aanpassen.
+- `/settings` (auth-gate + tabs) → `/settings/profile` en `/settings/privacy`.
+- Profiel bewerken: username, avatar-URL (met live preview), bio (met teller),
+  land/regio en favoriete game (keuze uit de eigen getrackte games).
+- Privacy: public/private profielinstelling met radio-keuzes.
+- Server actions (`updateProfile`/`updatePrivacy`) met validatie: username-format
+  `[a-zA-Z0-9_]{3,20}` + case-insensitieve uniciteit (eigen profiel uitgezonderd),
+  bio max 280, land max 56, avatar-URL moet `http(s)://` zijn. Feedback via
+  `useActionState` (inline error/success).
+- RLS (`profiles_update_own`) borgt dat alleen het eigen profiel wordt aangepast;
+  de unieke-constraint op `username` is de tweede vangnet (23505 → nette melding).
+- Entry-point: "Edit profile"-knop op het eigen profiel (Fase 6.1).
 
 ### Fase 6.3 — Follow-systeem 🔲 Gepland
 
