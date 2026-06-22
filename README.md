@@ -49,7 +49,9 @@ app/
     page.tsx             community review-feed
     actions.ts           create/update/delete review, like, add/delete comment
     [id]/page.tsx        review-detail + comments
-  users/[username]/page.tsx  publiek profiel — hero + stats + publieke library + reviews
+  users/
+    [username]/page.tsx  publiek profiel — hero + stats + publieke library + reviews
+    actions.ts           follow / unfollow
   profile/page.tsx       redirect naar het eigen publieke profiel (of /login)
   settings/              account-instellingen (auth-gate, tabs)
     profile/page.tsx     profiel bewerken (avatar/bio/land/favoriete game)
@@ -66,6 +68,7 @@ components/
   PlaythroughManager/ DashboardLibrary/ QuickUpdate/           dashboard + playthrough-beheer
   ReviewCard/ ReviewComposer/ ReviewComments/                  reviews + comments
   SettingsForm/  SettingsTabs · ProfileSettingsForm · PrivacySettingsForm  account-settings
+  FollowButton/                                               follow/unfollow (optimistisch)
   AuthForm/ HomeFeed/ ActivityFeed/                            auth + home-feed
   admin/  GameForm · ImportForm · IgdbSync                     admin-componenten
 lib/
@@ -120,7 +123,7 @@ designs/             visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 5.4 | Comments + `/reviews/[id]` | ✅ Afgerond |
 | 6.1 | Publieke profielpagina (`/users/[username]`) + `/profile`-redirect | ✅ Afgerond |
 | 6.2 | Profiel bewerken (`/settings`) + privacy (public/private) | ✅ Afgerond |
-| 6.3 | Follow-systeem | 🔲 Gepland |
+| 6.3 | Follow-systeem (follow/unfollow + counts) | ✅ Afgerond |
 | 6.4 | Activity events + echte home-feed | 🔲 Gepland |
 | 7–9 | Admin dashboard → public launch | 🔲 Gepland |
 

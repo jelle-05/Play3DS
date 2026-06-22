@@ -3,10 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GameCard from "@/components/GameCard/GameCard";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
+import FollowButton from "@/components/FollowButton/FollowButton";
 import {
   getProfileByUsername,
   getProfileStats,
   getProfilePlaythroughCards,
+  getFollowContext,
 } from "@/lib/profiles";
 import { getReviewsForUserDb } from "@/lib/reviews-db";
 import "./page.css";
@@ -39,10 +41,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   // Niet gevonden, of een privéprofiel van iemand anders (RLS geeft dan niets terug).
   if (!profile) notFound();
 
-  const [stats, playthroughs, reviews] = await Promise.all([
+  const [stats, playthroughs, reviews, follow] = await Promise.all([
     getProfileStats(profile.userId),
     getProfilePlaythroughCards(profile.userId),
     getReviewsForUserDb(profile.userId),
+    getFollowContext(profile.userId),
   ]);
 
   const since = memberSince(profile.createdAt);
@@ -96,13 +99,20 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             )}
           </div>
 
-          {profile.isOwner && (
-            <div className="profile-hero__actions">
+          <div className="profile-hero__actions">
+            {profile.isOwner ? (
               <Link href="/settings/profile" className="profile-hero__btn">
                 Edit profile
               </Link>
-            </div>
-          )}
+            ) : (
+              <FollowButton
+                targetUserId={profile.userId}
+                username={profile.username}
+                isLoggedIn={follow.isLoggedIn}
+                initialFollowing={follow.isFollowing}
+              />
+            )}
+          </div>
         </div>
 
         {/* Stats */}

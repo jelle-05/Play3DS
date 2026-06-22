@@ -180,6 +180,35 @@ export async function getOwnTrackedGames(): Promise<TrackedGameOption[]> {
   );
 }
 
+// Follow-context voor de profielpagina: is de bezoeker ingelogd, en volgt hij
+// de bekeken gebruiker al? (De eigenaar-check gebeurt op het profiel zelf.)
+export interface FollowContext {
+  isLoggedIn: boolean;
+  isFollowing: boolean;
+}
+
+export async function getFollowContext(
+  targetUserId: string
+): Promise<FollowContext> {
+  if (!isConfigured) return { isLoggedIn: false, isFollowing: false };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { isLoggedIn: false, isFollowing: false };
+  if (user.id === targetUserId) return { isLoggedIn: true, isFollowing: false };
+
+  const { data } = await supabase
+    .from("follows")
+    .select("id")
+    .eq("follower_id", user.id)
+    .eq("following_id", targetUserId)
+    .maybeSingle();
+
+  return { isLoggedIn: true, isFollowing: !!data };
+}
+
 // Profiel-tellingen. RLS bepaalt wat zichtbaar is: bezoekers tellen alleen
 // publieke playthroughs/reviews, de eigenaar telt al zijn eigen content.
 export async function getProfileStats(userId: string): Promise<ProfileStats> {

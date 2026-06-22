@@ -1433,11 +1433,18 @@ Doel: gebruikers en activiteit zichtbaar maken.
   de unieke-constraint op `username` is de tweede vangnet (23505 → nette melding).
 - Entry-point: "Edit profile"-knop op het eigen profiel (Fase 6.1).
 
-### Fase 6.3 — Follow-systeem 🔲 Gepland
+### Fase 6.3 — Follow-systeem ✅ Afgerond
 
-- Follow/unfollow tussen gebruikers (tabel `follows`, RLS al aanwezig).
-- Followers/following counts op profielpagina's (al getoond in 6.1).
-- Self-follow- en dubbele-follow-preventie (DB-checks aanwezig), auth/unauth UI.
+- Follow/unfollow tussen gebruikers via `app/users/actions.ts` (tabel `follows`).
+- `FollowButton` op het profiel: optimistische toggle (Following ↔ Follow, met
+  "unfollow"-hint bij hover), eigenaar ziet "Edit profile", niet-ingelogde
+  bezoeker ziet een Follow-knop die naar `/login` leidt.
+- Followers/following counts op het profiel (sinds 6.1) updaten na de actie.
+- Self-follow voorkomen (check in de actie + DB-check-constraint
+  `follower_id <> following_id`); dubbele follows voorkomen via de
+  unique-constraint (`unique(follower_id, following_id)`, 23505 genegeerd).
+- RLS (`follows_insert_own` / `follows_delete_own`) borgt dat je alleen je eigen
+  follow-rijen beheert. Geen migratie nodig (schema 0001).
 
 ### Fase 6.4 — Activity events + echte home-feed 🔲 Gepland
 
