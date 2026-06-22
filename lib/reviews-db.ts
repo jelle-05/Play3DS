@@ -172,6 +172,28 @@ export async function getReviewsForGameDb(gameKey: string): Promise<Review[]> {
   return data.map((r) => rowToReview(r, usernames, user?.id, meta));
 }
 
+// Reviews van één gebruiker (op user_id). Toont wat RLS teruggeeft: publieke
+// reviews voor bezoekers, alle eigen reviews voor de eigenaar. Nieuwste eerst.
+export async function getReviewsForUserDb(userId: string): Promise<Review[]> {
+  if (!isConfigured) return [];
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(REVIEW_SELECT)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  const usernames = await usernamesFor(supabase, data.map((r) => r.user_id));
+  const meta = await reviewMetaFor(supabase, user?.id, data.map((r) => r.id));
+  return data.map((r) => rowToReview(r, usernames, user?.id, meta));
+}
+
 // Eén review op id (RLS: publiek of eigen). null als niet gevonden.
 export async function getReviewById(id: string): Promise<Review | null> {
   if (!isConfigured) return MOCK_REVIEWS.find((r) => r.id === id) ?? null;

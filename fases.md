@@ -1403,18 +1403,41 @@ Output:
 
 Doel: gebruikers en activiteit zichtbaar maken.
 
-Taken:
+> Opgedeeld in mini-fases 6.1–6.4 (zoals de eerdere fases), elk los te bekijken
+> op een Vercel preview-URL. Controles op de deployment (desktop én mobiel,
+> light/dark), niet lokaal.
 
-- Profielpagina bouwen
-- Username uniek maken
-- Avatar/bio/regio/favoriete game
-- Public/private profielinstelling
-- Follow-systeem bouwen
-- Activity events genereren
-- Home feed bouwen
-- Feed voor gevolgde gebruikers
-- Openbare activity tonen
-- Eigen recente activiteit tonen
+### Fase 6.1 — Publieke profielpagina + unieke username ✅ Afgerond
+
+- Publiek profiel op `/users/[username]` (hero, stats, publieke library, reviews).
+- `/profile` redirect naar het eigen publieke profiel (of `/login`).
+- Username is uniek (DB-constraint + `handle_new_user`-trigger uit migratie 0001).
+- Privacy: RLS (`profiles_select`) toont alleen publieke profielen / het eigen
+  profiel / (admin) alles. Een privéprofiel van iemand anders is onzichtbaar
+  (404), waardoor geen privédata lekt; de eigenaar ziet zijn eigen profiel wel,
+  met een "Private"-badge. Stats/library/reviews respecteren dezelfde RLS.
+- Geen migratie nodig — het schema (profiles/follows/activity_events + RLS) staat
+  al sinds migratie 0001.
+
+### Fase 6.2 — Profiel bewerken + privacy 🔲 Gepland
+
+- `/settings/profile` (avatar, bio, land/regio, favoriete game).
+- `/settings/privacy` (public/private profielinstelling).
+- Server actions met validatie (username-uniciteit/format, bio-lengte, avatar).
+- RLS borgt dat een gebruiker alleen zijn eigen profiel kan aanpassen.
+
+### Fase 6.3 — Follow-systeem 🔲 Gepland
+
+- Follow/unfollow tussen gebruikers (tabel `follows`, RLS al aanwezig).
+- Followers/following counts op profielpagina's (al getoond in 6.1).
+- Self-follow- en dubbele-follow-preventie (DB-checks aanwezig), auth/unauth UI.
+
+### Fase 6.4 — Activity events + echte home-feed 🔲 Gepland
+
+- `activity_events` vastleggen bij relevante acties (review, comment, like,
+  playthrough-update, follow).
+- `ActivityFeed`/`HomeFeed` op echte Supabase-data i.p.v. mock.
+- Feed van gevolgde gebruikers, met respect voor privacy-instellingen.
 
 Output:
 
