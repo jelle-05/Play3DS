@@ -31,7 +31,7 @@ npm start      # productie server starten na build
 app/
   globals.css            design tokens, reset, shell layout, utility classes
   layout.tsx             root layout — StatusBar + NavRail + main
-  page.tsx               homepage — twee-state via echte Supabase-sessie
+  page.tsx               homepage — twee-state: marketing (uit) · app-feed met echte data (in)
   page.css               homepage-specifieke stijlen
   auth/
     actions.ts           server actions: signIn / signUp / signOut

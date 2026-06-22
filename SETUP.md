@@ -62,8 +62,10 @@ Daarna een nieuwe deploy triggeren (of opnieuw pushen) zodat de vars actief word
 ## 6. Klaar
 
 Zodra deze stappen gedaan zijn, draait de app op echte data: auth, de IGDB-
-catalogus, playthrough-tracking en reviews/comments/likes. Zonder env-vars
-blijft de site renderen op mock-data (de Supabase-code is veilig inert).
+catalogus, playthrough-tracking, reviews/comments/likes, profielen
+(`/users/[username]` + `/settings`), het follow-systeem en de activity-feed op
+de home. Zonder env-vars blijft de site renderen op mock-data (de Supabase-code
+is veilig inert).
 
 > `.env.example` bevat de namen van alle variabelen. Lokaal testen (optioneel,
 > alleen Claude Code) kan via een `.env.local` met dezelfde namen.

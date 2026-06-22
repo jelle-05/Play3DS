@@ -943,6 +943,7 @@ verified
 
 ```text
 /dashboard
+/profile            (redirect → /users/[eigen-username])
 /playthroughs/[id]
 /settings
 /settings/profile
