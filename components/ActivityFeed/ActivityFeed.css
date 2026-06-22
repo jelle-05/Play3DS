@@ -24,11 +24,15 @@
 
 .activity-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-3);
   border-radius: var(--radius-md);
   transition: background var(--transition-fast);
+}
+
+.activity-item__dot {
+  margin-top: 6px;
 }
 
 .activity-item:hover {
@@ -55,7 +59,7 @@
 .activity-item__content {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-2);
   min-width: 0;
 }
@@ -64,14 +68,28 @@
   font-size: var(--text-sm);
   color: var(--color-primary);
   flex-shrink: 0;
+  line-height: 1.5;
 }
 
 .activity-item__desc {
   font-size: var(--text-sm);
   color: var(--color-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.5;
+  min-width: 0;
+}
+
+.activity-item__actor {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.activity-item__actor:hover {
+  color: var(--color-primary);
+}
+
+.activity-item__link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
 
 .activity-item__time {

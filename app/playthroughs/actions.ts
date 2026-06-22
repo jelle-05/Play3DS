@@ -10,6 +10,7 @@ import {
   type GoalType,
   type PlaythroughStatus,
 } from "@/lib/playthroughs";
+import { recordActivity } from "@/lib/activity";
 
 const STATUSES: PlaythroughStatus[] = [
   "want_to_play",
@@ -88,6 +89,20 @@ export async function startPlaythrough(formData: FormData) {
     estimated_progress_percent: estimated,
   });
 
+  // Activity-event (start). Game-titel ophalen voor een leesbare feed.
+  const { data: g } = await supabase
+    .from("games")
+    .select("title, slug")
+    .eq("id", gameId)
+    .maybeSingle();
+  await recordActivity(supabase, {
+    userId: user.id,
+    eventType: "started",
+    entityType: "playthrough",
+    entityId: inserted.id,
+    meta: { gameTitle: g?.title, gameSlug: g?.slug ?? (slug || undefined) },
+  });
+
   revalidatePath("/dashboard");
   if (slug) revalidatePath(`/games/${slug}`);
   redirect("/dashboard");
@@ -107,7 +122,7 @@ export async function addPlaytime(playthroughId: string, minutesToAdd: number) {
 
   const { data: pt } = await supabase
     .from("playthroughs")
-    .select("id, game_id, status, goal_type, played_minutes")
+    .select("id, game_id, status, goal_type, played_minutes, visibility, games ( title, slug )")
     .eq("id", playthroughId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -140,6 +155,17 @@ export async function addPlaytime(playthroughId: string, minutesToAdd: number) {
     estimated_progress_percent: estimated,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const g = (pt as any).games;
+  await recordActivity(supabase, {
+    userId: user.id,
+    eventType: "logged_time",
+    entityType: "playthrough",
+    entityId: playthroughId,
+    meta: { gameTitle: g?.title, gameSlug: g?.slug, minutesAdded: minutesToAdd },
+    visibility: pt.visibility === "private" ? "private" : "public",
+  });
+
   revalidatePath("/dashboard");
 }
 
@@ -160,7 +186,7 @@ export async function updatePlaythroughStatus(
 
   const { data: pt } = await supabase
     .from("playthroughs")
-    .select("id, status, played_minutes, estimated_progress_percent")
+    .select("id, status, played_minutes, estimated_progress_percent, visibility, games ( title, slug )")
     .eq("id", playthroughId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -182,6 +208,17 @@ export async function updatePlaythroughStatus(
     new_status: status,
     played_minutes: pt.played_minutes ?? 0,
     estimated_progress_percent: pt.estimated_progress_percent ?? null,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const g = (pt as any).games;
+  await recordActivity(supabase, {
+    userId: user.id,
+    eventType: status === "completed" ? "completed" : "status_changed",
+    entityType: "playthrough",
+    entityId: playthroughId,
+    meta: { gameTitle: g?.title, gameSlug: g?.slug, status },
+    visibility: pt.visibility === "private" ? "private" : "public",
   });
 
   revalidatePlaythrough(playthroughId);

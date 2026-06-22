@@ -69,7 +69,7 @@ components/
   ReviewCard/ ReviewComposer/ ReviewComments/                  reviews + comments
   SettingsForm/  SettingsTabs · ProfileSettingsForm · PrivacySettingsForm  account-settings
   FollowButton/                                               follow/unfollow (optimistisch)
-  AuthForm/ HomeFeed/ ActivityFeed/                            auth + home-feed
+  AuthForm/ HomeFeed/ ActivityFeed/                            auth + home-feed (echte activity)
   admin/  GameForm · ImportForm · IgdbSync                     admin-componenten
 lib/
   games.ts           Game type + MOCK_GAMES (fallback) + STATUS_GROUPS / gradientForSlug
@@ -83,7 +83,8 @@ lib/
   playthroughs.ts    server-queries voor playthroughs
   reviews.ts         Review/ReviewComment types + helpers + MOCK_REVIEWS (fallback)
   reviews-db.ts      reviews/likes/comments uit Supabase (mock-fallback)
-  homeFeed.ts        mock-data voor de ingelogde home-feed
+  activity-types.ts  client-safe activity-types + tekst/icoon-builder
+  activity.ts        activity vastleggen (recordActivity) + home-feed queries
   supabase/          client.ts (browser) · server.ts (SSR) · middleware.ts (sessie-refresh)
 middleware.ts        ververst de Supabase-sessie per request (no-op zonder env-vars)
 supabase/
@@ -91,7 +92,7 @@ supabase/
 designs/             visuele referenties (iiSU/Shopii-stijl, 1–6)
 ```
 
-> **Data:** catalogus, playthroughs en reviews/comments/likes draaien op **Supabase**. Zonder env-vars vallen de meeste queries veilig terug op mock-data (`lib/games.ts`, `lib/reviews.ts`, `lib/homeFeed.ts`) zodat de app blijft renderen.
+> **Data:** catalogus, playthroughs, reviews/comments/likes, profielen, follows en de activity-feed draaien op **Supabase**. Zonder env-vars vallen de meeste queries veilig terug op mock-data (`lib/games.ts`, `lib/reviews.ts`) zodat de app blijft renderen.
 >
 > **Setup:** Supabase/Vercel/IGDB-koppeling vereist handmatige stappen — zie [`SETUP.md`](./SETUP.md). Optioneel kan Claude Code via een lokale, gitignored `.mcp.json` (Supabase MCP-server) migraties draaien — zie `SETUP.md` §7.
 
@@ -124,7 +125,7 @@ designs/             visuele referenties (iiSU/Shopii-stijl, 1–6)
 | 6.1 | Publieke profielpagina (`/users/[username]`) + `/profile`-redirect | ✅ Afgerond |
 | 6.2 | Profiel bewerken (`/settings`) + privacy (public/private) | ✅ Afgerond |
 | 6.3 | Follow-systeem (follow/unfollow + counts) | ✅ Afgerond |
-| 6.4 | Activity events + echte home-feed | 🔲 Gepland |
+| 6.4 | Activity events + echte home-feed | ✅ Afgerond |
 | 7–9 | Admin dashboard → public launch | 🔲 Gepland |
 
 ## Documentatie

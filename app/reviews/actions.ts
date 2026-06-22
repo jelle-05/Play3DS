@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { reviewStatusLabel, type ReviewStatus } from "@/lib/reviews";
+import { recordActivity } from "@/lib/activity";
 
 const STATUSES: ReviewStatus[] = ["playing", "completed", "paused", "dropped"];
 
@@ -56,17 +57,40 @@ export async function createReview(formData: FormData) {
     .limit(1)
     .maybeSingle();
 
-  await supabase.from("reviews").insert({
-    user_id: user.id,
-    game_id: gameId,
-    playthrough_id: pt?.id ?? null,
-    rating: fields.rating,
-    status_at_review: fields.status,
-    label: reviewStatusLabel(fields.status),
-    title: fields.title || null,
-    body: fields.body,
-    has_spoilers: fields.hasSpoilers,
-    visibility: "public",
+  const { data: inserted } = await supabase
+    .from("reviews")
+    .insert({
+      user_id: user.id,
+      game_id: gameId,
+      playthrough_id: pt?.id ?? null,
+      rating: fields.rating,
+      status_at_review: fields.status,
+      label: reviewStatusLabel(fields.status),
+      title: fields.title || null,
+      body: fields.body,
+      has_spoilers: fields.hasSpoilers,
+      visibility: "public",
+    })
+    .select("id")
+    .maybeSingle();
+
+  // Activity-event (review). Game-titel ophalen voor de feed.
+  const { data: g } = await supabase
+    .from("games")
+    .select("title, slug")
+    .eq("id", gameId)
+    .maybeSingle();
+  await recordActivity(supabase, {
+    userId: user.id,
+    eventType: "reviewed",
+    entityType: "review",
+    entityId: inserted?.id ?? null,
+    meta: {
+      gameTitle: g?.title,
+      gameSlug: g?.slug ?? (slug || undefined),
+      reviewId: inserted?.id,
+      rating: fields.rating,
+    },
   });
 
   if (slug) revalidatePath(`/games/${slug}`);

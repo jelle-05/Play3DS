@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { recordActivity } from "@/lib/activity";
 
 // Een andere gebruiker volgen. De DB borgt de regels (unieke follow + geen
 // self-follow via de check-constraint); we vangen ze hier netjes af.
@@ -17,9 +18,20 @@ export async function followUser(targetUserId: string, username?: string) {
 
   // Insert is idempotent dankzij de unique-constraint; een dubbele follow
   // levert een 23505 die we stilzwijgend negeren.
-  await supabase
+  const { error } = await supabase
     .from("follows")
     .insert({ follower_id: user.id, following_id: targetUserId });
+
+  // Alleen bij een echte nieuwe follow een activity-event vastleggen.
+  if (!error && username) {
+    await recordActivity(supabase, {
+      userId: user.id,
+      eventType: "followed",
+      entityType: "user",
+      entityId: targetUserId,
+      meta: { targetUsername: username },
+    });
+  }
 
   if (username) revalidatePath(`/users/${username}`);
 }

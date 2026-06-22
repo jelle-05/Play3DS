@@ -1446,12 +1446,24 @@ Doel: gebruikers en activiteit zichtbaar maken.
 - RLS (`follows_insert_own` / `follows_delete_own`) borgt dat je alleen je eigen
   follow-rijen beheert. Geen migratie nodig (schema 0001).
 
-### Fase 6.4 — Activity events + echte home-feed 🔲 Gepland
+### Fase 6.4 — Activity events + echte home-feed ✅ Afgerond
 
-- `activity_events` vastleggen bij relevante acties (review, comment, like,
-  playthrough-update, follow).
-- `ActivityFeed`/`HomeFeed` op echte Supabase-data i.p.v. mock.
-- Feed van gevolgde gebruikers, met respect voor privacy-instellingen.
+- `activity_events` worden vastgelegd via `recordActivity` (fail-safe) bij:
+  playthrough starten, tijd loggen, status wijzigen, voltooien, een review
+  plaatsen en iemand volgen. Comments/likes bewust niet (feed-ruis beperken).
+- `lib/activity-types.ts` (client-safe types + tekst/icoon-builder) en
+  `lib/activity.ts` (vastleggen + `getHomeActivity`).
+- `ActivityFeed` herschreven naar echte items (actor-link + tekst + tijd);
+  `HomeFeed` en de homepage (`app/page.tsx`) draaien volledig op echte data:
+  actieve playthroughs, Quick update, "Up Next" (want-to-play), recente
+  community-reviews en de activity-feed. Stats (playing/uren/completed/reviews)
+  uit de eigen playthroughs + profielstats.
+- Privacy: de home-feed toont primair de activiteit van **gevolgde, publieke**
+  profielen; events van privé-playthroughs worden als `private` weggeschreven en
+  niet getoond. Volgt de bezoeker niemand (of leeg), dan valt het terug op de
+  eigen recente activiteit met een hint. Empty-states overal aanwezig.
+- De ongebruikte mock `lib/homeFeed.ts` is verwijderd.
+- Geen migratie nodig (schema 0001: `activity_events` + RLS).
 
 Output:
 
