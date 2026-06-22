@@ -6,21 +6,37 @@ import gsap from "gsap";
 import GameCard from "@/components/GameCard/GameCard";
 import ActivityFeed from "@/components/ActivityFeed/ActivityFeed";
 import QuickUpdate from "@/components/QuickUpdate/QuickUpdate";
-import { MOCK_GAMES } from "@/lib/games";
-import type { MockUser, HomeStats, ActivityItem, ReviewPreview } from "@/lib/homeFeed";
+import type { Game } from "@/lib/games";
+import type { ActivityItem } from "@/lib/activity-types";
+import type { Review } from "@/lib/reviews";
 import "./HomeFeed.css";
 
-interface HomeFeedProps {
-  user: MockUser;
-  stats: HomeStats;
-  activity: ActivityItem[];
-  reviews: ReviewPreview[];
+export interface HomeFeedStats {
+  activePlaythroughs: number;
+  hoursLogged: number;
+  completed: number;
+  reviews: number;
 }
 
-const ACTIVE_GAMES = MOCK_GAMES.filter((g) => g.status === "playing");
-const SUGGESTED_GAMES = MOCK_GAMES.filter((g) => g.status === "want").slice(0, 4);
+interface HomeFeedProps {
+  displayName: string;
+  stats: HomeFeedStats;
+  activeGames: Game[];
+  suggestedGames: Game[];
+  activity: ActivityItem[];
+  activityScope: "following" | "you" | "empty";
+  reviews: Review[];
+}
 
-export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedProps) {
+export default function HomeFeed({
+  displayName,
+  stats,
+  activeGames,
+  suggestedGames,
+  activity,
+  activityScope,
+  reviews,
+}: HomeFeedProps) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".feed-welcome", {
@@ -41,14 +57,18 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
     return () => ctx.revert();
   }, []);
 
+  const activityEmpty =
+    activityScope === "you"
+      ? "Follow other players to see their activity here. For now, this is your recent activity."
+      : "No activity yet. Start tracking a game or follow other players.";
+
   return (
     <div className="home-feed">
       {/* Welcome header */}
       <header className="feed-welcome">
         <div className="feed-welcome__text">
           <h1 className="feed-welcome__title">
-            Welcome back,{" "}
-            <span className="gradient-text">{user.displayName}</span>
+            Welcome back, <span className="gradient-text">{displayName}</span>
           </h1>
           <p className="feed-welcome__sub">Here&apos;s what&apos;s been happening</p>
         </div>
@@ -80,41 +100,50 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
           <section className="feed-section">
             <div className="feed-section-header">
               <h2 className="feed-section-title">Active Playthroughs</h2>
-              <Link href="/games" className="feed-section-link">
+              <Link href="/dashboard" className="feed-section-link">
                 See all →
               </Link>
             </div>
-            <div className="feed-active-grid">
-              {ACTIVE_GAMES.map((game) => (
-                <GameCard
-                  key={game.id}
-                  game={game}
-                  variant="default"
-                  href={`/games/${game.id}`}
-                />
-              ))}
-            </div>
+            {activeGames.length === 0 ? (
+              <p className="feed-empty">
+                You&apos;re not playing anything right now.{" "}
+                <Link href="/games" className="feed-section-link">
+                  Browse the library →
+                </Link>
+              </p>
+            ) : (
+              <div className="feed-active-grid">
+                {activeGames.map((game) => (
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    variant="default"
+                    href={`/games/${game.slug ?? game.id}`}
+                  />
+                ))}
+              </div>
+            )}
           </section>
 
           {/* Quick update */}
-          <QuickUpdate games={ACTIVE_GAMES} />
+          {activeGames.length > 0 && <QuickUpdate games={activeGames} />}
 
-          {/* Suggested games */}
-          {SUGGESTED_GAMES.length > 0 && (
+          {/* Suggested games (your "want to play") */}
+          {suggestedGames.length > 0 && (
             <section className="feed-section">
               <div className="feed-section-header">
-                <h2 className="feed-section-title">Suggested for You</h2>
+                <h2 className="feed-section-title">Up Next</h2>
                 <Link href="/games" className="feed-section-link">
                   Browse →
                 </Link>
               </div>
               <div className="feed-compact-grid">
-                {SUGGESTED_GAMES.map((game) => (
+                {suggestedGames.map((game) => (
                   <GameCard
                     key={game.id}
                     game={game}
                     variant="compact"
-                    href={`/games/${game.id}`}
+                    href={`/games/${game.slug ?? game.id}`}
                   />
                 ))}
               </div>
@@ -124,32 +153,40 @@ export default function HomeFeed({ user, stats, activity, reviews }: HomeFeedPro
 
         {/* Secondary column */}
         <div className="feed-secondary">
-          <ActivityFeed items={activity} />
+          <ActivityFeed items={activity} emptyText={activityEmpty} />
 
-          {/* Review previews */}
-          <section className="feed-section">
-            <div className="feed-section-header">
-              <h2 className="feed-section-title">Recent Reviews</h2>
-              <Link href="/reviews" className="feed-section-link">
-                See all →
-              </Link>
-            </div>
-            <div className="feed-reviews">
-              {reviews.map((r) => (
-                <div key={r.id} className="review-preview-card">
-                  <div className="review-preview-card__header">
-                    <div
-                      className={`review-preview-card__dot ${r.gradientClass}`}
-                    />
-                    <span className="review-preview-card__game">{r.gameTitle}</span>
-                    <span className="review-preview-card__rating">{r.rating}/10</span>
-                  </div>
-                  <p className="review-preview-card__excerpt">&ldquo;{r.excerpt}&rdquo;</p>
-                  <span className="review-preview-card__time">{r.relativeTime}</span>
-                </div>
-              ))}
-            </div>
-          </section>
+          {/* Recent community reviews */}
+          {reviews.length > 0 && (
+            <section className="feed-section">
+              <div className="feed-section-header">
+                <h2 className="feed-section-title">Recent Reviews</h2>
+                <Link href="/reviews" className="feed-section-link">
+                  See all →
+                </Link>
+              </div>
+              <div className="feed-reviews">
+                {reviews.map((r) => (
+                  <Link
+                    key={r.id}
+                    href={`/reviews/${r.id}`}
+                    className="review-preview-card"
+                  >
+                    <div className="review-preview-card__header">
+                      <div className={`review-preview-card__dot ${r.gradientClass}`} />
+                      <span className="review-preview-card__game">{r.gameTitle}</span>
+                      <span className="review-preview-card__rating">{r.rating}/10</span>
+                    </div>
+                    <p className="review-preview-card__excerpt">
+                      &ldquo;{r.body}&rdquo;
+                    </p>
+                    <span className="review-preview-card__time">
+                      by {r.author} · {r.relativeTime}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>

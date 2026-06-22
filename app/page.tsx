@@ -4,33 +4,53 @@ import ButtonIcon from "@/components/ButtonIcon/ButtonIcon";
 import DepthTiles from "@/components/DepthTiles/DepthTiles";
 import HomeFeed from "@/components/HomeFeed/HomeFeed";
 import { getSessionUser } from "@/lib/auth";
-import {
-  MOCK_USER,
-  MOCK_HOME_STATS,
-  MOCK_ACTIVITY,
-  MOCK_REVIEW_PREVIEWS,
-} from "@/lib/homeFeed";
+import { getUserPlaythroughs, playthroughToCard } from "@/lib/playthroughs";
+import { getProfileStats } from "@/lib/profiles";
+import { getHomeActivity } from "@/lib/activity";
+import { getRecentReviews } from "@/lib/reviews-db";
+
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const session = await getSessionUser();
 
-  // Ingelogd → persoonlijke feed (echte gebruiker; feed-data nog mock t/m Fase 3).
+  // Ingelogd → persoonlijke app-feed op echte data.
   if (session) {
+    const [playthroughs, stats, activity, recentReviews] = await Promise.all([
+      getUserPlaythroughs(),
+      getProfileStats(session.id),
+      getHomeActivity(),
+      getRecentReviews(3),
+    ]);
+
+    const cards = playthroughs.map(playthroughToCard);
+    const activeGames = cards.filter((c) => c.status === "playing");
+    const suggestedGames = cards.filter((c) => c.status === "want").slice(0, 4);
+    const minutesLogged = playthroughs.reduce(
+      (sum, p) => sum + (p.playedMinutes ?? 0),
+      0
+    );
+
     return (
       <HomeFeed
-        user={{
-          id: session.id,
-          username: session.username,
-          displayName: session.username,
-          avatarInitials: session.avatarInitials,
-          joinedYear: MOCK_USER.joinedYear,
+        displayName={session.username}
+        stats={{
+          activePlaythroughs: activeGames.length,
+          hoursLogged: Math.floor(minutesLogged / 60),
+          completed: stats.completed,
+          reviews: stats.reviews,
         }}
-        stats={MOCK_HOME_STATS}
-        activity={MOCK_ACTIVITY}
-        reviews={MOCK_REVIEW_PREVIEWS}
+        activeGames={activeGames}
+        suggestedGames={suggestedGames}
+        activity={activity.items}
+        activityScope={activity.scope}
+        reviews={recentReviews}
       />
     );
   }
+
+  // Niet ingelogd → marketinghome met echte community-reviews.
+  const reviews = await getRecentReviews(3);
 
   return (
     <div className="home home--logged-out">
@@ -81,29 +101,35 @@ export default async function HomePage() {
       </section>
 
       {/* Public review snippets */}
-      <div className="home-review-snippets">
-        <div className="home-snippets-head">
-          <h3 className="home-snippets-title">Community Reviews</h3>
-          <Link href="/reviews" className="home-snippets-link">
-            View all →
-          </Link>
-        </div>
-        {MOCK_REVIEW_PREVIEWS.slice(0, 3).map((r) => (
-          <div key={r.id} className="home-review-snippet">
-            <div className={`home-review-snippet__dot ${r.gradientClass}`} />
-            <div className="home-review-snippet__body">
-              <div className="home-review-snippet__meta">
-                <span className="home-review-snippet__game">{r.gameTitle}</span>
-                <span className="home-review-snippet__rating">{r.rating}/10</span>
-              </div>
-              <p className="home-review-snippet__text">&ldquo;{r.excerpt}&rdquo;</p>
-              <span className="home-review-snippet__author">
-                by {r.author} · {r.relativeTime}
-              </span>
-            </div>
+      {reviews.length > 0 && (
+        <div className="home-review-snippets">
+          <div className="home-snippets-head">
+            <h3 className="home-snippets-title">Community Reviews</h3>
+            <Link href="/reviews" className="home-snippets-link">
+              View all →
+            </Link>
           </div>
-        ))}
-      </div>
+          {reviews.map((r) => (
+            <Link
+              key={r.id}
+              href={`/reviews/${r.id}`}
+              className="home-review-snippet"
+            >
+              <div className={`home-review-snippet__dot ${r.gradientClass}`} />
+              <div className="home-review-snippet__body">
+                <div className="home-review-snippet__meta">
+                  <span className="home-review-snippet__game">{r.gameTitle}</span>
+                  <span className="home-review-snippet__rating">{r.rating}/10</span>
+                </div>
+                <p className="home-review-snippet__text">&ldquo;{r.body}&rdquo;</p>
+                <span className="home-review-snippet__author">
+                  by {r.author} · {r.relativeTime}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
